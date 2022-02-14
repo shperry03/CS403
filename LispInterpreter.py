@@ -18,44 +18,36 @@ It will read text files in Lisp Style and execute certain commands:
     >                   IF
 
 """
+def readFile(LispFile: str) -> str:
+    fileObject = open(LispFile, "r")
+    program = fileObject.read()
+    return program
 
+def parser(program: str):
+    return readTokens(tokenize(program))
 
-"""
+def tokenize(chars: str) -> list:
+    return chars.replace('(',' ( ').replace(')' , ' ) ').split()
 
-    If an "IF" is read in the text.
-
-"""
-def IfState():
-    print ("IF STATEMENT READ")
-
-
-"""
-
-    If a "WHILE" is read in the text.
-
-"""
-def WhileState():
-    print ("WHILE STATEMENT READ")
-
-
-"""
-
-    If a "BEGIN" is read in the text.
-
-"""
-def BeginState():
-    print ("BEGIN STATEMENT READ")
-
-
-"""
-
-    If a "SET" is read in the text.
-
-"""
-def SetState():
-    print ("SET STATEMENT READ")
-
-
+def readTokens(tokens: list):
+    t = tokens.pop(0)
+    if t == '(':
+        newList = []
+        while tokens[0] != ')':
+            # can check for number here instead of adding 
+            # number as a string
+            newList.append(readTokens(tokens))
+        tokens.pop(0)
+        return newList
+    else:
+        # try to return int
+        try: return int(t)
+        except ValueError:
+            # if fails, try to return float
+            try: return float(t)
+            except ValueError:
+                # if all fails, just return it as a string
+                return str(t)
 
 
 
