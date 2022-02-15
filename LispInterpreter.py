@@ -1,3 +1,6 @@
+import math
+import operator as op
+
 
 """
 Sam Perry and Erik Buinevicius
@@ -31,6 +34,29 @@ variables is a global dictionary that will be used to store values of variables 
 '''
 variables = {}
 
+Symbol = str
+Number = (int, float)
+Atom = (Symbol, Number)
+Exp = (Atom, list)
+Env = dict
+
+def environment() -> Env:
+    env = Env()
+    env.update(vars(math))
+    env.update({
+        '+': op.add,
+        '-': op.sub,
+        '=': op.eq,
+        '>': op.gt,
+        '<': op.lt,
+        '*': op.mul,
+        '/': op.truediv,
+        'BEGIN': lambda *x: x[-1], # what is this doing?
+    })
+    return env
+
+use_env = environment()
+    
 '''
 Open the Lisp file for reading and return it in string form
 '''
@@ -72,22 +98,29 @@ def readTokens(tokens: list):
             try: return float(t)
             except ValueError:
                 # if all fails, just return it as a string
-                return str(t)
+                return Symbol(t)
 
-
+    
 '''
-Set statement action
+Evaluates LISP statements recursively.
+This function provides the main functionality for our lisp program.
 '''
-def setStatement(token: list):
-    # if var exists, update it, else add it to dict
-    variables[token[1]] = token[2]
-
-
-def get_inner(lst):
-    print()
+def eval(exp: list, env = use_env) -> Exp:
+    if isinstance(exp, Symbol): # If item is a symbol, we want to return the corresponding operation
+        return env[exp]
+    elif isinstance(exp, Number): # If item is a number, return it
+        return exp
+    elif exp[0] == 'SET': # If the first item is SET
+        (_, symbol, exp) = exp # Set three variables based on the required 3 items for set
+        env[symbol] = eval(exp, env) # Add the new symbol to our dictionary of characters
+    else: # Item is not an atom or known definition
+        calc = eval(exp[0], env) # Get the first character (we know we will evaluate on this)
+        args = [eval(arg, env) for arg in exp[1:]] # Call eval recursively on every other item
+        return calc(*args) # Call the correct evaluation based on symbol one and the results of recursive calls
 
 program = readFile("TestLisp.txt")
 
 list1 = parser(program)
 print(list1)
 print(variables)
+print(eval(list1))
