@@ -1,8 +1,7 @@
 from ast import Num
 import math
 import operator as op
-from tkinter import Y
-from typing import List
+
 
 
 """
