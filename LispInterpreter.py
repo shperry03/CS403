@@ -1,5 +1,8 @@
+from ast import Num
 import math
 import operator as op
+from tkinter import Y
+from typing import List
 
 
 """
@@ -51,7 +54,15 @@ def environment() -> Env:
         '<': op.lt,
         '*': op.mul,
         '/': op.truediv,
-        'BEGIN': lambda *x: x[-1], # what is this doing?
+        'BEGIN': lambda *x: x[-1], # sets the last element of the list to the beginning
+        'CAR': lambda x: x[0], # returns the first value in the list
+        'CDR': lambda x: x[1:], # returns the remaining elements in the list
+        'CONS': lambda x,y: [x] + y, # rerturns a list pair of x and y (x . y) where x and y are both lists
+        'NUMBER?': lambda x: isinstance(x, Number), # checks if x is a Number/(int,float) 
+        'SYMBOL?': lambda x: isinstance(x,Symbol), # checks if x is a Symbol/str
+        'LIST?': lambda x: isinstance(x,list), # checks if x is a list
+        'NULL?': lambda x: x == [], # returns the comparison of x == [] a null list
+        'T': lambda x: True # returns true regardless of anything
     })
     return env
 
