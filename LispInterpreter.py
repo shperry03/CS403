@@ -26,19 +26,34 @@ Test Changes Erik
 Test Changes Sam
 '''
 
+'''
+variables is a global dictionary that will be used to store values of variables found in the Lisp file
+'''
 variables = {}
 
+'''
+Open the Lisp file for reading and return it in string form
+'''
 def readFile(LispFile: str) -> str:
-    fileObject = open(LispFile, "r")
-    program = fileObject.read()
+    fileObject = open(LispFile, "r") # Open the Lisp file (written by us) for reading
+    program = fileObject.read() # Conver the file into one large string
     return program
 
+'''
+Calls readTokens on the string version of the Lisp file and returns the list of commands
+'''
 def parser(program: str) -> list:
     return readTokens(tokenize(program))
 
+'''
+Takes in a piece of text (a Lisp file in string form) and creates tokens, separating on ()
+'''
 def tokenize(chars: str) -> list:
     return chars.replace('(',' ( ').replace(')' , ' ) ').split()
 
+'''
+Takes the list of tokens and turns it into a list of lists by nesting statements in () properly
+'''
 def readTokens(tokens: list):
     t = tokens.pop(0)
     if t == '(':
