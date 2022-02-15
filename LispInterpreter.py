@@ -26,12 +26,14 @@ Test Changes Erik
 Test Changes Sam
 '''
 
+variables = {}
+
 def readFile(LispFile: str) -> str:
     fileObject = open(LispFile, "r")
     program = fileObject.read()
     return program
 
-def parser(program: str):
+def parser(program: str) -> list:
     return readTokens(tokenize(program))
 
 def tokenize(chars: str) -> list:
@@ -58,4 +60,19 @@ def readTokens(tokens: list):
                 return str(t)
 
 
+'''
+Set statement action
+'''
+def setStatement(token: list):
+    # if var exists, update it, else add it to dict
+    variables[token[1]] = token[2]
 
+
+def get_inner(lst):
+    print()
+
+program = readFile("TestLisp.txt")
+
+list1 = parser(program)
+print(list1)
+print(variables)
