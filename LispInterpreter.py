@@ -62,6 +62,7 @@ def environment() -> Env:
         'LIST?': lambda x: isinstance(x,list), # checks if x is a list
         'NULL?': lambda x: !x, # returns the comparison of x == [] a null list
         'T': True # returns true regardless of anything
+        'PRINT': lambda x: print(x) # prints the evaluation of expression x
     })
     return env
 
