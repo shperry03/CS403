@@ -121,11 +121,11 @@ def eval(exp: list, env = use_env) -> Exp:
         return env[exp]
     elif isinstance(exp, Number): # If item is a number, return it
         return exp
-    elif exp[0] == 'SET': # If the first item is SET
+    elif exp[0].upper() == 'SET': # If the first item is SET
         (_, symbol, exp) = exp # Set three variables based on the required 3 items for set
         env[symbol] = eval(exp, env) # Add the new symbol to our dictionary of characters
     else: # Item is not an atom or known definition
-        calc = eval(exp[0], env) # Get the first character (we know we will evaluate on this)
+        calc = eval(exp[0].upper(), env) # Get the first character (we know we will evaluate on this)
         args = [eval(arg, env) for arg in exp[1:]] # Call eval recursively on every other item
         return calc(*args) # Call the correct evaluation based on symbol one and the results of recursive calls
 
