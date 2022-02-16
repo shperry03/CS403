@@ -60,8 +60,8 @@ def environment() -> Env:
         'NUMBER?': lambda x: isinstance(x, Number), # checks if x is a Number/(int,float) 
         'SYMBOL?': lambda x: isinstance(x,Symbol), # checks if x is a Symbol/str
         'LIST?': lambda x: isinstance(x,list), # checks if x is a list
-        'NULL?': lambda x: x == [], # returns the comparison of x == [] a null list
-        'T': lambda x: True # returns true regardless of anything
+        'NULL?': lambda x: !x, # returns the comparison of x == [] a null list
+        'T': True # returns true regardless of anything
     })
     return env
 
