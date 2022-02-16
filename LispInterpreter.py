@@ -46,7 +46,7 @@ def environment() -> Env:
     env = Env()
     env.update(vars(math))
     env.update({
-        '+': op.add,
+        '+': addExp,
         '-': op.sub,
         '=': op.eq,
         '>': op.gt,
@@ -124,11 +124,20 @@ def eval(exp: list, env = use_env) -> Exp:
     elif exp[0].upper() == 'SET': # If the first item is SET
         (_, symbol, exp) = exp # Set three variables based on the required 3 items for set
         env[symbol] = eval(exp, env) # Add the new symbol to our dictionary of characters
+    elif exp[0].upper() == 'DEFINE':
+        print()
     else: # Item is not an atom or known definition
         calc = eval(exp[0].upper(), env) # Get the first character (we know we will evaluate on this)
         args = [eval(arg, env) for arg in exp[1:]] # Call eval recursively on every other item
         return calc(*args) # Call the correct evaluation based on symbol one and the results of recursive calls
-
+    
+'''
+    ADD function for 
+'''
+def addExp(x: list) -> Number:
+    return sum(x)
+    
+    
 program = readFile("TestLisp.txt")
 
 list1 = parser(program)
