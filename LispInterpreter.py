@@ -1,6 +1,8 @@
 from ast import Num
 import math
 import operator as op
+from selectors import EpollSelector
+import numpy
 
 
 
@@ -47,12 +49,12 @@ def environment() -> Env:
     env.update(vars(math))
     env.update({
         '+': addExp,
-        '-': op.sub,
-        '=': op.eq,
-        '>': op.gt,
-        '<': op.lt,
-        '*': op.mul,
-        '/': op.truediv,
+        '-': subExp,
+        '=': equalExp,
+        '>': gtExp,
+        '<': ltExp,
+        '*': multExp,
+        '/': divExp,
         'BEGIN': lambda *x: x[-1], # sets the last element of the list to the beginning
         'CAR': lambda x: x[0], # returns the first value in the list
         'CDR': lambda x: x[1:], # returns the remaining elements in the list
@@ -60,8 +62,8 @@ def environment() -> Env:
         'NUMBER?': lambda x: isinstance(x, Number), # checks if x is a Number/(int,float) 
         'SYMBOL?': lambda x: isinstance(x,Symbol), # checks if x is a Symbol/str
         'LIST?': lambda x: isinstance(x,list), # checks if x is a list
-        'NULL?': lambda x: !x, # returns the comparison of x == [] a null list
-        'T': True # returns true regardless of anything
+        'NULL?': lambda x: x == [], # returns the comparison of x == [] a null list
+        'T': True, # returns true regardless of anything
         'PRINT': lambda x: print(x) # prints the evaluation of expression x
     })
     return env
@@ -132,12 +134,64 @@ def eval(exp: list, env = use_env) -> Exp:
         return calc(*args) # Call the correct evaluation based on symbol one and the results of recursive calls
     
 '''
-    ADD function for 
+    ADD function for DICT
+    sums across the list
 '''
 def addExp(x: list) -> Number:
     return sum(x)
+
+'''
+    SUB function for DICT
+    subtracts the 2nd arg from the 1st arg
+'''    
+def subExp(x: list) -> Number:
+    return (x[0] - x[1])
+
+'''
+    MULTIPLICATION function for DICT
+    multiplies across the list
+'''
+def multExp(x: list) -> Number:
+    return numpy.prod(x)
+
+'''
+    DIVISION function for dict
+    divides 1st element by 2nd element
+'''
+def divExp(x: list) -> Number:
+    return (x[0] / x[1])
+
+'''
+    EQUAL function for dict
+    uses basic == in python so works for numbers, characters, lists, etc. 
+'''
+def equalExp(x: list) -> bool:
+    if (x[0] == x[1]):
+        return True
+    else:
+        return False
     
-    
+'''
+    GREATER THAN function for DICT
+    if the 1st element is > 2nd element returns true 
+'''
+def gtExp(x: list) -> bool:
+    if (x[0] > x[1]):
+        return True
+    else:
+        return False
+
+'''
+    LESS THAN function for dict
+    if the 1st element is < 2nd element returns true
+'''
+def ltExp(x: list) -> bool:
+    if (x[0] < x[1]):
+        return True
+    else:
+        return False
+
+
 program = readFile("TestLisp.txt")
 
 list1 = parser(program)
