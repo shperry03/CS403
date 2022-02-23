@@ -1,17 +1,13 @@
 from ast import Num
 import math
 import operator as op
-import numpy
 
 
 
 """
 Sam Perry and Erik Buinevicius
-
 Our project is a Lisp Interpreter, based on Kamin's Lisp in Pascal, written in python.
-
 It will read text files in Lisp Style and execute certain commands:
-
     WHILE               CONS
     SET                 CAR
     BEGIN               CDR
@@ -22,7 +18,6 @@ It will read text files in Lisp Style and execute certain commands:
     =                   PRINT
     <                   T
     >                   IF
-
 """
 
 '''
@@ -42,6 +37,8 @@ Number = (int, float)
 Atom = (Symbol, Number)
 Exp = (Atom, list)
 Env = dict
+F_Output = '()'
+T_Output = 't'
 
 
 '''
@@ -78,9 +75,9 @@ def divExp(a, b) -> Number:
 '''
 def equalExp(a, b) -> bool:
     if (a == b):
-        return True
+        return T_Output
     else:
-        return False
+        return F_Output
     
 '''
     GREATER THAN function for DICT
@@ -88,9 +85,9 @@ def equalExp(a, b) -> bool:
 '''
 def gtExp(a, b) -> bool:
     if (a > b):
-        return True
+        return T_Output
     else:
-        return False
+        return F_Output
 
 '''
     LESS THAN function for dict
@@ -98,9 +95,9 @@ def gtExp(a, b) -> bool:
 '''
 def ltExp(a, b) -> bool:
     if (a < b):
-        return True
+        return T_Output
     else:
-        return False
+        return F_Output
 
 def environment() -> Env:
     env = Env()
@@ -114,14 +111,12 @@ def environment() -> Env:
         '*': multExp,
         '/': divExp,
         'BEGIN': lambda *x: x[-1], # sets the last element of the list to the beginning
-        'CAR': lambda x: x[0], # returns the first value in the list
-        'CDR': lambda x: x[1:], # returns the remaining elements in the list
-        'CONS': lambda x,y: [x] + y, # rerturns a list pair of x and y (x . y) where x and y are both lists
+        'CONS': lambda x,y: [[x], [y]], # rerturns a list pair of x and y (x . y) where x and y are both lists
         'NUMBER?': lambda x: isinstance(x, Number), # checks if x is a Number/(int,float) 
         'SYMBOL?': lambda x: isinstance(x,Symbol), # checks if x is a Symbol/str
         'LIST?': lambda x: isinstance(x,list), # checks if x is a list
         'NULL?': lambda x: x == [], # returns the comparison of x == [] a null list
-        'T': True, # returns true regardless of anything
+        'T': T_Output, # returns true regardless of anything
         'PRINT': lambda x: print(x) # prints the evaluation of expression x
     })
     return env
@@ -177,22 +172,35 @@ Evaluates LISP statements recursively.
 This function provides the main functionality for our lisp program.
 '''
 def eval(exp, env = use_env) -> Exp:
-    if isinstance(exp, Symbol): # If item is a symbol, we want to return the corresponding operation
+    "Evaluate an expression in an environment."
+    if isinstance(exp, Symbol):    # variable reference
         return env[exp]
-    elif isinstance(exp, Number): # If item is a number, return it
-        return exp
-    elif not isinstance(exp, list):
-        return exp
-    op, *args = exp
-    if op.upper() == 'SET': # If the first item is SET
-        (_, symbol, exp) = exp # Set three variables based on the required 3 items for set
-        env[symbol] = eval(exp, env) # Add the new symbol to our dictionary of characters
-    elif op.upper() == 'DEFINE':
-        print()
-    else: # Item is not an atom or known definition
-        calc = eval(op.upper(), env) # Get the first character (we know we will evaluate on this)
-        args = [eval(arg, env) for arg in args] # Call eval recursively on every other item
-        return calc(*args) # Call the correct evaluation based on symbol one and the results of recursive calls
+    elif not isinstance(exp, list):# constant 
+        return exp 
+    op, *args = exp     
+    if op == 'IF':             # conditional
+        (test, conseq, alt) = args
+        exp = (conseq if eval(test, env) == 't' else alt)
+        return eval(exp, env)
+    elif op == 'WHILE':
+        (exp1, expBody) = args
+        while (eval(exp1) == 't'):
+            eval(expBody)
+    elif op == 'CAR':
+        return args[0]
+    elif op == 'CDR':
+        return args[1:]
+    elif op == 'SET':         # definition
+        (symbol, exp) = args
+        env[symbol] = eval(exp, env)
+    elif op == 'LIST?':
+        return isinstance(args, list)
+    else:                        # procedure call
+        proc = eval(op, env)
+        vals = [eval(arg, env) for arg in args]
+        if proc is None:
+            exit()
+        return proc(*vals)
 
 
 program = readFile("TestLisp.txt")
