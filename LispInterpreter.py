@@ -1,4 +1,4 @@
-
+import math
 """
 Sam Perry and Erik Buinevicius
 Our project is a Lisp Interpreter, based on Kamin's Lisp in Pascal, written in python.
@@ -27,36 +27,12 @@ variables is a global dictionary that will be used to store values of variables 
 '''
 variables = {}
 
-'''
-symbol in lisp returns a string
-'''
 Symbol = str
-'''
-numbers can either be integers or floats 
-we need to know if its a number
-'''
 Number = (int, float)
-'''
-defines atom in lisp which is either a symbol or a number
-'''
 Atom = (Symbol, Number)
-'''
-expression in lisp
-can either be atom or list
-'''
 Exp = (Atom, list)
-'''
-setting the environment to work int
-dictionary environment
-'''
 Env = dict
-'''
-false output in lisp is ()
-'''
 F_Output = '()'
-'''
-true output in lisp is 't'
-'''
 T_Output = 't'
 
 
@@ -118,8 +94,17 @@ def ltExp(a, b) -> bool:
     else:
         return F_Output
 
+def nullExp(x):
+    if not x:
+        return T_Output
+    return F_Output
+'''
+Creating this dictionary allows for simple calls to functions within eval()
+Allows for recursive calls within eval()
+'''
 def environment() -> Env:
     env = Env()
+    env.update(vars(math))
     env.update({
         '+': addExp,
         '-': subExp,
@@ -133,12 +118,13 @@ def environment() -> Env:
         'NUMBER?': lambda x: isinstance(x, Number), # checks if x is a Number/(int,float) 
         'SYMBOL?': lambda x: isinstance(x,Symbol), # checks if x is a Symbol/str
         'LIST?': lambda x: isinstance(x,list), # checks if x is a list
-        'NULL?': lambda x: x == [], # returns the comparison of x == [] a null list
+        'NULL?': nullExp,
         'T': T_Output, # returns true regardless of anything
         'PRINT': lambda x: print(x) # prints the evaluation of expression x
     })
     return env
 
+# Set a variable to call environment
 use_env = environment()
     
 '''
@@ -191,10 +177,14 @@ This function provides the main functionality for our lisp program.
 '''
 def eval(exp, env = use_env) -> Exp:
     "Evaluate an expression in an environment."
-    if isinstance(exp, Symbol):    # variable reference
+    if not exp:
+        return
+    elif isinstance(exp, Symbol):    # variable reference
         return env[exp]
+    elif isinstance(exp, Number):
+        return exp
     elif not isinstance(exp, list):# constant 
-        return exp 
+        return exp
     op, *args = exp     
     if op == 'IF':             # conditional
         (test, conseq, alt) = args
@@ -208,16 +198,18 @@ def eval(exp, env = use_env) -> Exp:
         return args[0]
     elif op == 'CDR':
         return args[1:]
-    elif op == 'SET':         # definition
+    elif op == 'SET':
         (symbol, exp) = args
         env[symbol] = eval(exp, env)
     elif op == 'LIST?':
         return isinstance(args, list)
-    else:                        # procedure call
+    else:                  # procedure call
+        if not args: #can maybe be removed
+            return
         proc = eval(op, env)
         vals = [eval(arg, env) for arg in args]
         if proc is None:
-            exit()
+            return
         return proc(*vals)
 
 
@@ -226,4 +218,4 @@ program = readFile("TestLisp.txt")
 list1 = parser(program)
 print(list1)
 print(variables)
-print(eval(list1))
+eval(list1)

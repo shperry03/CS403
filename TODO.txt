@@ -14,9 +14,15 @@ NUMBER?
 SYMBOL?
 LIST?
 PRINT
-
-NOT DONE
+CAR 
+CDR
+CONS
 NULL?
 T
+
+NOT DONE
 DEFINE
 CALL
+Commenting
+Test cases
+Error handling
