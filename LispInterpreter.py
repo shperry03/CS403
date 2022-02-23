@@ -1,8 +1,3 @@
-from ast import Num
-import math
-import operator as op
-
-
 
 """
 Sam Perry and Erik Buinevicius
