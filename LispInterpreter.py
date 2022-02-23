@@ -1,7 +1,6 @@
 from ast import Num
 import math
 import operator as op
-from selectors import EpollSelector
 import numpy
 
 
@@ -43,6 +42,65 @@ Number = (int, float)
 Atom = (Symbol, Number)
 Exp = (Atom, list)
 Env = dict
+
+
+'''
+    ADD function for DICT
+    sums across the list
+'''
+def addExp(a, b) -> Number:
+    return a + b
+
+'''
+    SUB function for DICT
+    subtracts the 2nd arg from the 1st arg
+'''    
+def subExp(a, b) -> Number:
+    return (a - b)
+
+'''
+    MULTIPLICATION function for DICT
+    multiplies across the list
+'''
+def multExp(a, b) -> Number:
+    return a * b
+
+'''
+    DIVISION function for dict
+    divides 1st element by 2nd element
+'''
+def divExp(a, b) -> Number:
+    return (a / b)
+
+'''
+    EQUAL function for dict
+    uses basic == in python so works for numbers, characters, lists, etc. 
+'''
+def equalExp(a, b) -> bool:
+    if (a == b):
+        return True
+    else:
+        return False
+    
+'''
+    GREATER THAN function for DICT
+    if the 1st element is > 2nd element returns true 
+'''
+def gtExp(a, b) -> bool:
+    if (a > b):
+        return True
+    else:
+        return False
+
+'''
+    LESS THAN function for dict
+    if the 1st element is < 2nd element returns true
+'''
+def ltExp(a, b) -> bool:
+    if (a < b):
+        return True
+    else:
+        return False
 
 def environment() -> Env:
     env = Env()
@@ -118,78 +176,23 @@ def readTokens(tokens: list):
 Evaluates LISP statements recursively.
 This function provides the main functionality for our lisp program.
 '''
-def eval(exp: list, env = use_env) -> Exp:
+def eval(exp, env = use_env) -> Exp:
     if isinstance(exp, Symbol): # If item is a symbol, we want to return the corresponding operation
         return env[exp]
     elif isinstance(exp, Number): # If item is a number, return it
         return exp
-    elif exp[0].upper() == 'SET': # If the first item is SET
+    elif not isinstance(exp, list):
+        return exp
+    op, *args = exp
+    if op.upper() == 'SET': # If the first item is SET
         (_, symbol, exp) = exp # Set three variables based on the required 3 items for set
         env[symbol] = eval(exp, env) # Add the new symbol to our dictionary of characters
-    elif exp[0].upper() == 'DEFINE':
+    elif op.upper() == 'DEFINE':
         print()
     else: # Item is not an atom or known definition
-        calc = eval(exp[0].upper(), env) # Get the first character (we know we will evaluate on this)
-        args = [eval(arg, env) for arg in exp[1:]] # Call eval recursively on every other item
+        calc = eval(op.upper(), env) # Get the first character (we know we will evaluate on this)
+        args = [eval(arg, env) for arg in args] # Call eval recursively on every other item
         return calc(*args) # Call the correct evaluation based on symbol one and the results of recursive calls
-    
-'''
-    ADD function for DICT
-    sums across the list
-'''
-def addExp(x: list) -> Number:
-    return sum(x)
-
-'''
-    SUB function for DICT
-    subtracts the 2nd arg from the 1st arg
-'''    
-def subExp(x: list) -> Number:
-    return (x[0] - x[1])
-
-'''
-    MULTIPLICATION function for DICT
-    multiplies across the list
-'''
-def multExp(x: list) -> Number:
-    return numpy.prod(x)
-
-'''
-    DIVISION function for dict
-    divides 1st element by 2nd element
-'''
-def divExp(x: list) -> Number:
-    return (x[0] / x[1])
-
-'''
-    EQUAL function for dict
-    uses basic == in python so works for numbers, characters, lists, etc. 
-'''
-def equalExp(x: list) -> bool:
-    if (x[0] == x[1]):
-        return True
-    else:
-        return False
-    
-'''
-    GREATER THAN function for DICT
-    if the 1st element is > 2nd element returns true 
-'''
-def gtExp(x: list) -> bool:
-    if (x[0] > x[1]):
-        return True
-    else:
-        return False
-
-'''
-    LESS THAN function for dict
-    if the 1st element is < 2nd element returns true
-'''
-def ltExp(x: list) -> bool:
-    if (x[0] < x[1]):
-        return True
-    else:
-        return False
 
 
 program = readFile("TestLisp.txt")

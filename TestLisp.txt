@@ -1,1 +1,1 @@
-(BEGIN (SET r 10) (* pi (* r r)))
+((SET A 5) (NUMBER? A))
