@@ -96,7 +96,6 @@ def ltExp(a, b) -> bool:
 
 def environment() -> Env:
     env = Env()
-    env.update(vars(math))
     env.update({
         '+': addExp,
         '-': subExp,
