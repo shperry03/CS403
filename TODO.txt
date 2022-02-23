@@ -1,0 +1,22 @@
+DONE
+IF
+WHILE
+SET
+BEGIN
++
+-
+*
+/
+=
+<
+>
+NUMBER?
+SYMBOL?
+LIST?
+PRINT
+
+NOT DONE
+NULL?
+T
+DEFINE
+CALL
