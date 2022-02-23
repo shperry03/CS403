@@ -27,12 +27,36 @@ variables is a global dictionary that will be used to store values of variables 
 '''
 variables = {}
 
+'''
+symbol in lisp returns a string
+'''
 Symbol = str
+'''
+numbers can either be integers or floats 
+we need to know if its a number
+'''
 Number = (int, float)
+'''
+defines atom in lisp which is either a symbol or a number
+'''
 Atom = (Symbol, Number)
+'''
+expression in lisp
+can either be atom or list
+'''
 Exp = (Atom, list)
+'''
+setting the environment to work int
+dictionary environment
+'''
 Env = dict
+'''
+false output in lisp is ()
+'''
 F_Output = '()'
+'''
+true output in lisp is 't'
+'''
 T_Output = 't'
 
 
