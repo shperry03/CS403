@@ -7,5 +7,4 @@
 (PRINT D)
 (SET E (CDR C))
 (PRINT E)
-(SET C (10 (20 30)))
 )

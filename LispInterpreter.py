@@ -1,5 +1,6 @@
 import math
 from re import T
+
 """
 Sam Perry and Erik Buinevicius
 Our project is a Lisp Interpreter, based on Kamin's Lisp in Pascal, written in python.
@@ -93,9 +94,8 @@ def ltExp(a, b) -> bool:
 
 def nullExp(x):
     if not x:
-        print(T_Output)
         return T_Output
-    print(F_Output)
+
     return F_Output
 
 '''
@@ -188,17 +188,13 @@ This function provides the main functionality for our lisp program.
 '''
 def eval(exp, env = use_env) -> Exp:
     "Evaluate an expression in an environment."
-    if not exp: # If an expression is null, don't try to evaluate
-        return
-    elif isinstance(exp, Symbol): # Check if exp is an instance of Symbol and return its corresponding operation
+    if isinstance(exp, Symbol): # Check if exp is an instance of Symbol and return its corresponding operation
         return env[exp]
     elif isinstance(exp, Number): # Check if an exp is an instance of a number and return it if so
         return exp
     elif not isinstance(exp, list): # If exp is any other non-list item, return it
         return exp
     op, *args = exp # Grab the operator and the rest of the command
-    #print('OG op: ', op)
-    #print('OG args: ', args)
     if op == 'IF': # IF expression
         (exp1, expT, expF) = args # Grab the three arguments that should have been passed in
         exp = (expT if eval(exp1, env) == 't' else expF) # If evaluating the test expression yields true, return the first output, otherwise the second
@@ -213,54 +209,43 @@ def eval(exp, env = use_env) -> Exp:
         return eval(args[0])[1:]
     elif op == 'SET': # Associate the symbol name with the value of the expression
         (symbol, exp) = args
-        print(exp)
         env[symbol] = eval(exp, env) # Add the new symbol to our environment for future access
     elif op == 'LIST?': # Returns T if the expression is not an atom
         if isinstance(eval(args), Number) or isinstance(eval(args), Symbol): # If argument to check evaluates to number of symbol, return false
-            print(F_Output)
             return F_Output
-        print(T_Output) # Otherwise, return True
         return T_Output
     elif op == "NUMBER?": # Returns T if the expression is a number
-        print(args)
         if isinstance(eval(args[0]), Number):
-            print(T_Output)
             return T_Output
-        print(F_Output)
         return F_Output
     elif op == "SYMBOL?": # Returns T if exp is a name, () otherwise
         if isinstance(eval(args[0]), Symbol): # Check if exp evaluates to a symbol
-            print(T_Output)
             return T_Output
-        print(F_Output) # Otherwise, return nil
         return F_Output
     elif op == "DEFINE": # Defines a function. When called the expression will be evaluated with the actual parameters
         # define name (arg1 ... argN) expr)
         name = args[0]
         params = args[1]
         ops = args[2]
-        print('name:', name)
-        print('params:', params)
-        print('ops:', ops)
         defineFunc(name, params, ops)
         #env[args[1]] = # set
     else: # Procedure call
         # may need a null check here?
-        #print('op', op)
         proc = eval(op) # Grab the function to be used to operate on
         vals = [eval(arg) for arg in args] # Evaluate every argument
-        #print('vals', vals)
-        if proc is None: # So that empty parentheses at end are not evaluated
-            return
-        if not vals:
-            return
         return proc(*vals) # Evaluate each argument's result in proc
 
-
+def evaluateAll(expressions):
+    for exp in expressions:
+        eval(exp)
+    print('\n')
+        
+    
+print("TEST CASE 1")
 program1 = readFile("TestLisp1.txt")
 list1 = parser(program1)
-print(list1)
-eval(list1) 
+#print(list1)
+evaluateAll(list1) 
 '''
 Should print:
 -10
@@ -271,13 +256,25 @@ t
 ()
 '''
 
+print("TEST CASE 2")
 program2 = readFile("TestLisp2.txt")
 list2 = parser(program2)
-print(list2)
-eval(list2)
+#print(list2)
+evaluateAll(list2)
 '''
 Should print:
 [10], [20]
 [10]
 [20]
 '''
+
+print("TEST CASE 3")
+program3 = readFile("TestLisp3.txt")
+list3 = parser(program3)
+#print(list3)
+evaluateAll(list3)
+'''
+Should print:
+(nothing)
+'''
+
