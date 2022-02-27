@@ -2,7 +2,6 @@ DONE
 IF
 WHILE
 SET
-BEGIN
 +
 -
 *
@@ -13,16 +12,18 @@ BEGIN
 NUMBER?
 SYMBOL?
 LIST?
-PRINT
-CAR 
-CDR
-CONS
 NULL?
+PRINT
 T
+
+UNSURE
+CONS
+CAR
+CDR
+BEGIN
 
 NOT DONE
 DEFINE
 CALL
 Commenting
 Test cases
-Error handling

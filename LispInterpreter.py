@@ -1,4 +1,5 @@
 import math
+from re import T
 """
 Sam Perry and Erik Buinevicius
 Our project is a Lisp Interpreter, based on Kamin's Lisp in Pascal, written in python.
@@ -22,10 +23,6 @@ Test Changes Erik
 Test Changes Sam
 '''
 
-'''
-variables is a global dictionary that will be used to store values of variables found in the Lisp file
-'''
-variables = {}
 
 Symbol = str
 Number = (int, float)
@@ -96,8 +93,11 @@ def ltExp(a, b) -> bool:
 
 def nullExp(x):
     if not x:
+        print(T_Output)
         return T_Output
+    print(F_Output)
     return F_Output
+
 '''
 Creating this dictionary allows for simple calls to functions within eval()
 Allows for recursive calls within eval()
@@ -115,9 +115,6 @@ def environment() -> Env:
         '/': divExp,
         'BEGIN': lambda *x: x[-1], # sets the last element of the list to the beginning
         'CONS': lambda x,y: [[x], [y]], # rerturns a list pair of x and y (x . y) where x and y are both lists
-        'NUMBER?': lambda x: isinstance(x, Number), # checks if x is a Number/(int,float) 
-        'SYMBOL?': lambda x: isinstance(x,Symbol), # checks if x is a Symbol/str
-        'LIST?': lambda x: isinstance(x,list), # checks if x is a list
         'NULL?': nullExp,
         'T': T_Output, # returns true regardless of anything
         'PRINT': lambda x: print(x) # prints the evaluation of expression x
@@ -126,6 +123,20 @@ def environment() -> Env:
 
 # Set a variable to call environment
 use_env = environment()
+
+def defineFunc(name, params, ops, env = use_env):
+    if env[name]:
+        print("Function " + name + " already installed.")
+        return
+    def name(params):
+        print('function created')
+        operator = ops[0]
+        for i in ops[1:]:
+            pass
+    
+    return name
+
+    
     
 '''
 Open the Lisp file for reading and return it in string form
@@ -177,45 +188,96 @@ This function provides the main functionality for our lisp program.
 '''
 def eval(exp, env = use_env) -> Exp:
     "Evaluate an expression in an environment."
-    if not exp:
+    if not exp: # If an expression is null, don't try to evaluate
         return
-    elif isinstance(exp, Symbol):    # variable reference
+    elif isinstance(exp, Symbol): # Check if exp is an instance of Symbol and return its corresponding operation
         return env[exp]
-    elif isinstance(exp, Number):
+    elif isinstance(exp, Number): # Check if an exp is an instance of a number and return it if so
         return exp
-    elif not isinstance(exp, list):# constant 
+    elif not isinstance(exp, list): # If exp is any other non-list item, return it
         return exp
-    op, *args = exp     
-    if op == 'IF':             # conditional
-        (test, conseq, alt) = args
-        exp = (conseq if eval(test, env) == 't' else alt)
+    op, *args = exp # Grab the operator and the rest of the command
+    #print('OG op: ', op)
+    #print('OG args: ', args)
+    if op == 'IF': # IF expression
+        (exp1, expT, expF) = args # Grab the three arguments that should have been passed in
+        exp = (expT if eval(exp1, env) == 't' else expF) # If evaluating the test expression yields true, return the first output, otherwise the second
         return eval(exp, env)
-    elif op == 'WHILE':
-        (exp1, expBody) = args
-        while (eval(exp1) == 't'):
-            eval(expBody)
-    elif op == 'CAR':
-        return args[0]
-    elif op == 'CDR':
-        return args[1:]
-    elif op == 'SET':
+    elif op == 'WHILE': # WHILE expresion
+        (exp1, expBody) = args # Grab the test expression and the expression to be executed
+        while (eval(exp1) == 't'): # While the first expression holds true, evaluate the second expression 
+            eval(expBody) # (Second expression must eventually cause first expression to yield T)
+    elif op == 'CAR': # Return the first argument of args
+        return eval(args[0])[0]
+    elif op == 'CDR': # Return all but the first arguments of args
+        return eval(args[0])[1:]
+    elif op == 'SET': # Associate the symbol name with the value of the expression
         (symbol, exp) = args
-        env[symbol] = eval(exp, env)
-    elif op == 'LIST?':
-        return isinstance(args, list)
-    else:                  # procedure call
-        if not args: #can maybe be removed
+        print(exp)
+        env[symbol] = eval(exp, env) # Add the new symbol to our environment for future access
+    elif op == 'LIST?': # Returns T if the expression is not an atom
+        if isinstance(eval(args), Number) or isinstance(eval(args), Symbol): # If argument to check evaluates to number of symbol, return false
+            print(F_Output)
+            return F_Output
+        print(T_Output) # Otherwise, return True
+        return T_Output
+    elif op == "NUMBER?": # Returns T if the expression is a number
+        print(args)
+        if isinstance(eval(args[0]), Number):
+            print(T_Output)
+            return T_Output
+        print(F_Output)
+        return F_Output
+    elif op == "SYMBOL?": # Returns T if exp is a name, () otherwise
+        if isinstance(eval(args[0]), Symbol): # Check if exp evaluates to a symbol
+            print(T_Output)
+            return T_Output
+        print(F_Output) # Otherwise, return nil
+        return F_Output
+    elif op == "DEFINE": # Defines a function. When called the expression will be evaluated with the actual parameters
+        # define name (arg1 ... argN) expr)
+        name = args[0]
+        params = args[1]
+        ops = args[2]
+        print('name:', name)
+        print('params:', params)
+        print('ops:', ops)
+        defineFunc(name, params, ops)
+        #env[args[1]] = # set
+    else: # Procedure call
+        # may need a null check here?
+        #print('op', op)
+        proc = eval(op) # Grab the function to be used to operate on
+        vals = [eval(arg) for arg in args] # Evaluate every argument
+        #print('vals', vals)
+        if proc is None: # So that empty parentheses at end are not evaluated
             return
-        proc = eval(op, env)
-        vals = [eval(arg, env) for arg in args]
-        if proc is None:
+        if not vals:
             return
-        return proc(*vals)
+        return proc(*vals) # Evaluate each argument's result in proc
 
 
-program = readFile("TestLisp.txt")
-
-list1 = parser(program)
+program1 = readFile("TestLisp1.txt")
+list1 = parser(program1)
 print(list1)
-print(variables)
-eval(list1)
+eval(list1) 
+'''
+Should print:
+-10
+0.1
+()
+t
+t
+()
+'''
+
+program2 = readFile("TestLisp2.txt")
+list2 = parser(program2)
+print(list2)
+eval(list2)
+'''
+Should print:
+[10], [20]
+[10]
+[20]
+'''
