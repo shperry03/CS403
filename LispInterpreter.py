@@ -241,9 +241,9 @@ def eval(exp, env = use_env) -> Exp:
 
         #env[args[1]] = # set
     else: # Procedure call
-        proc = eval(op) # Grab the function to be used to operate on
+        exec = eval(op) # Grab the function to be used to operate on
         vals = [eval(arg) for arg in args] # Evaluate every argument
-        return proc(*vals) # Evaluate each argument's result in proc
+        return exec(*vals) # Evaluate each argument's result in exec
 
 '''
 function for evaluating all the expressions found in the lisp program
