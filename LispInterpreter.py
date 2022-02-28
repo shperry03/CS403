@@ -18,7 +18,7 @@ It will read text files in Lisp Style and execute certain commands:
 
     CITATIONS:
     https://norvig.com/lispy.html 
-    ( Used as the basis for parsing and environment ideas. A majority of operations were designed and written by EB and SP. )
+    ( Used as the basis for parsing and environment ideas. The vast majority of operations were designed and written by EB and SP. )
 
 """
 
