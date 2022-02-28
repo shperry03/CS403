@@ -14,6 +14,7 @@ It will read text files in Lisp Style and execute certain commands:
     =                   PRINT
     <                   T
     >                   IF
+    DEFINE              CALL
 
     CITATIONS:
     https://norvig.com/lispy.html 
@@ -37,35 +38,35 @@ T_Output = 't'
 
 
 '''
-    ADD function for DICT
+    ADD function for environment
     sums across the list
 '''
 def addExp(a, b) -> Number:
     return a + b
 
 '''
-    SUB function for DICT
+    SUB function for environment
     subtracts the 2nd arg from the 1st arg
 '''    
 def subExp(a, b) -> Number:
     return (a - b)
 
 '''
-    MULTIPLICATION function for DICT
+    MULTIPLICATION function for environment
     multiplies across the list
 '''
 def multExp(a, b) -> Number:
     return a * b
 
 '''
-    DIVISION function for dict
+    DIVISION function for environment
     divides 1st element by 2nd element
 '''
 def divExp(a, b) -> Number:
     return (a / b)
 
 '''
-    EQUAL function for dict
+    EQUAL function for environment
     uses basic == in python so works for numbers, characters, lists, etc. 
 '''
 def equalExp(a, b) -> bool:
@@ -75,7 +76,7 @@ def equalExp(a, b) -> bool:
         return F_Output
     
 '''
-    GREATER THAN function for DICT
+    GREATER THAN function for environment
     if the 1st element is > 2nd element returns true 
 '''
 def gtExp(a, b) -> bool:
@@ -85,7 +86,7 @@ def gtExp(a, b) -> bool:
         return F_Output
 
 '''
-    LESS THAN function for dict
+    LESS THAN function for environment
     if the 1st element is < 2nd element returns true
 '''
 def ltExp(a, b) -> bool:
@@ -95,7 +96,7 @@ def ltExp(a, b) -> bool:
         return F_Output
 
 '''
-NULL check function for dictionary
+NULL check function for environment
 if x is null return true else return false
 '''
 def nullExp(x):
@@ -106,7 +107,7 @@ def nullExp(x):
 
 '''
 Creating this dictionary allows for simple calls to functions within eval()
-Allows for recursive calls within eval()
+Also allows for recursive calls within eval()
 '''
 def environment() -> Env:
     env = Env()
@@ -131,7 +132,8 @@ def environment() -> Env:
 use_env = environment()
 
 '''
-Create a new dictionary that contains the functions that a user may define
+Create a new dictionary that contains the functions that a user may define.
+This dictionary will be populated with functions and parameter requirements as DEFINE is called. 
 '''
 def user_functions() -> Env:
     env = Env()
@@ -185,7 +187,7 @@ def readTokens(tokens: list):
     
 '''
 Evaluates LISP statements recursively.
-This function provides the main functionality for our lisp program.
+This function provides the main functionality for our lisp interpreter program.
 '''
 def eval(exp, env = use_env) -> Exp:
     "Evaluate an expression in an environment."
@@ -216,7 +218,7 @@ def eval(exp, env = use_env) -> Exp:
             return F_Output
         return T_Output
     elif op == "NUMBER?": # Returns T if the expression is a number
-        if isinstance(eval(*args), Number):
+        if isinstance(eval(*args), Number): # Call eval on the arguments passed in, check if it is a number.
             return T_Output
         return F_Output
     elif op == "SYMBOL?": # Returns T if exp is a name, () otherwise
@@ -247,14 +249,15 @@ def eval(exp, env = use_env) -> Exp:
         return exec(*vals) # Evaluate each argument's result in exec
 
 '''
-function for evaluating all the expressions found in the lisp program
-makes sure to separate all test cases for easy reading
+Function for evaluating all the expressions found in the lisp program
+makes sure to separate all test cases for easy reading.
 '''
 def evaluateAll(expressions):
     for exp in expressions:
         eval(exp)
     print('\n')
-        
+    
+### TEST CASES BELOW ###
     
 print("TEST CASE 1")
 program1 = readFile("TestLisp1.txt")
