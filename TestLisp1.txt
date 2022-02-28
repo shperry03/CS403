@@ -1,5 +1,5 @@
 (
-(SET A (+ 10 20)) 
+(BEGIN(SET A (+ 10 20))) 
 (SET A (- A 40))
 (PRINT A)
 (SET B (* 10 20))
