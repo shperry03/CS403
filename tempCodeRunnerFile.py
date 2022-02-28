@@ -1,1 +1,1 @@
-while tokens[0]
+print(item)

@@ -1,0 +1,7 @@
+(
+(SET a 7)
+(SET b 10)
+
+(DEFINE myfunc (a b c d) (+ (- (+ a 10) b) (+ c d)))
+(PRINT (myfunc 4 5 6 7))
+)

@@ -34,6 +34,7 @@ F_Output = '()'
 T_Output = 't'
 
 
+
 '''
     ADD function for DICT
     sums across the list
@@ -124,17 +125,37 @@ def environment() -> Env:
 # Set a variable to call environment
 use_env = environment()
 
-def defineFunc(name, params, ops, env = use_env):
-    if env[name]:
-        print("Function " + name + " already installed.")
-        return
-    def name(params):
-        print('function created')
-        operator = ops[0]
-        for i in ops[1:]:
-            pass
+def user_functions() -> Env:
+    env = Env()
+    return env
+
+user_functions = user_functions()
+
+def user_vars() -> Env:
+    env = Env()
+    return env
+
+user_vars = user_vars()
     
-    return name
+    
+
+'''
+(myfunc (5 10 20 30))
+if (op in user_functions())
+user_vars[a] = 5
+user_vars[b] = 10
+
+eval(user_functions[myfunc][expression].replace(a, 1))
+...
+
+
+'''
+    
+    
+'''
+(DEFINE myfunc (a b c d) (+ (- a b) (* c d)))
+'''
+    
 
     
     
@@ -180,7 +201,6 @@ def readTokens(tokens: list):
             except ValueError:
                 # if all fails, just return it as a string
                 return Symbol(t)
-
     
 '''
 Evaluates LISP statements recursively.
@@ -224,16 +244,26 @@ def eval(exp, env = use_env) -> Exp:
         return F_Output
     elif op == "DEFINE": # Defines a function. When called the expression will be evaluated with the actual parameters
         # define name (arg1 ... argN) expr)
-        name = args[0]
-        params = args[1]
-        ops = args[2]
-        defineFunc(name, params, ops)
+        name = args[0] # grab name
+        params = args[1] # grab params
+        ops = args[2] # grab arguments
+        user_functions[name] = {} # Create dictionary for new function
+        user_functions[name]['Params'] = params # Set parameters field
+        user_functions[name]['Ops'] = ops # Set operation field
+    elif op in user_functions:
+        expression = user_functions[op]['Ops'] # Grab expression from existing definition dict
+        for i in range(len(args)): # Iterate through each arg passed in
+            cur = user_functions[op]['Params'][i] # Update the environment for each param
+            use_env[cur] = args[i]
+        return eval(expression) # Evaluate the expression with updated variables
+
         #env[args[1]] = # set
     else: # Procedure call
         # may need a null check here?
         proc = eval(op) # Grab the function to be used to operate on
         vals = [eval(arg) for arg in args] # Evaluate every argument
         return proc(*vals) # Evaluate each argument's result in proc
+
 
 def evaluateAll(expressions):
     for exp in expressions:
@@ -278,3 +308,11 @@ Should print:
 (nothing)
 '''
 
+print("TEST CASE 4")
+program4 = readFile("TestLisp4.txt")
+list4 = parser(program4)
+evaluateAll(list4)
+'''
+Should print:
+22
+'''
