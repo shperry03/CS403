@@ -316,7 +316,13 @@ list6 = parser(program6)
 evaluateAll(list6)
 '''
 Should print:
-
+[10]
+[[20]]
+t
+()
+t
+t
+2
 '''
 
 print("TEST CASE 7")
@@ -325,7 +331,11 @@ list7 = parser(program7)
 evaluateAll(list7)
 '''
 Should print:
-
+t
+t
+()
+()
+[[10], [20]]
 '''
 
 print("TEST CASE 8")
@@ -334,5 +344,5 @@ list8 = parser(program8)
 evaluateAll(list8)
 '''
 Should print:
-
+11
 '''
