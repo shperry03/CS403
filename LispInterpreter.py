@@ -16,7 +16,8 @@ It will read text files in Lisp Style and execute certain commands:
     >                   IF
 
     CITATIONS:
-    https://norvig.com/lispy.html ( used as the basis for parsing and environment ideas )
+    https://norvig.com/lispy.html 
+    ( Used as the basis for parsing and environment ideas. A majority of operations were designed and written by EB and SP. )
 
 """
 
