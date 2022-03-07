@@ -1,0 +1,4 @@
+(
+    (BEGIN (DEFINE myfunc (b c d) (IF (NUMBER? b) (+ b c) (+ b d))) 
+    (PRINT (myfunc 10 1 -1)))
+)

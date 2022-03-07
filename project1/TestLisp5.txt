@@ -1,0 +1,4 @@
+(
+    (SET A 10) (WHILE (> A 0) (SET A (- A 1)))
+    (PRINT A)
+)
