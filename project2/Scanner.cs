@@ -12,7 +12,21 @@ namespace project2
 
         private static readonly Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType>{
             {"and", TokenType.AND},
-            {"class", TokenType.CLA}
+            {"class", TokenType.CLASS},
+            {"else", TokenType.ELSE},
+            {"false", TokenType.FALSE},
+            {"for", TokenType.FOR},
+            {"fun", TokenType.FUN},
+            {"if", TokenType.IF},
+            {"nil", TokenType.NIL},
+            {"or", TokenType.OR},
+            {"print", TokenType.PRINT},
+            {"return", TokenType.RETURN},
+            {"super", TokenType.SUPER},
+            {"this", TokenType.THIS},
+            {"true", TokenType.TRUE},
+            {"var", TokenType.VAR},
+            {"while", TokenType.WHILE}
         };
         
 
@@ -92,7 +106,12 @@ namespace project2
                 Advance();
             }
 
-            AddToken(TokenType.IDENTIFIER);
+            var text = source.Substring(start, current - start); // Is length right?
+            TokenType type = keywords[text];
+            if (!keywords.ContainsKey(text)) { // may need to change this somehow to check for a null value?
+                type = TokenType.IDENTIFIER;
+            }
+            AddToken(type);
         }
 
         private bool IsAlpha(char c) {
