@@ -10,6 +10,7 @@ namespace project2
         private int current = 0;
         private int line = 1;
 
+        // Dicitonary to read from Lox language token input to Type
         private static readonly Dictionary<string, TokenType> keywords = new Dictionary<string, TokenType>{
             {"and", TokenType.AND},
             {"class", TokenType.CLASS},
@@ -30,15 +31,18 @@ namespace project2
         };
         
 
+
+
         // might need column variable to be one ahead of current and pass this to other funtions
 
         public Scanner(string source) {
             this.source = source;
         }
 
+        // Read all tokens until end of file
         public List<Token> ScanTokens() {
-            while (!IsAtEnd()) {
-
+            while (!IsAtEnd()) { // Checking for lexemes
+                
                 start = current;
                 ScanToken();   
             }
@@ -46,8 +50,12 @@ namespace project2
             return tokens;
         }
 
+        /*
+            Scan a single token (character) and call the appropriate method if needed
+        */
+
         private void ScanToken() {
-            char c = Advance();
+            char c = Advance(); // Gets the current character then adds 1
 
             switch (c) {
                 case '(': AddToken(TokenType.LEFT_PAREN); break;
@@ -79,7 +87,7 @@ namespace project2
                         AddToken(TokenType.SLASH);
                     }
                     break;
-                case ' ':
+                case ' ': // need to break here?
                 case '\r':
                 case '\t':
                     break;
@@ -101,12 +109,14 @@ namespace project2
             }
         }
 
+        // If the item is not in our dictionary, then it must be an identifier
         private void Identifier() {
             while (IsAlphaNumeric(Peek())) {
                 Advance();
             }
 
-            var text = source.Substring(start, current - start); // Is length right?
+            // Check the substring and add it to our dictionary
+            var text = source.Substring(start, current - start); 
             TokenType type = keywords[text];
             if (!keywords.ContainsKey(text)) { // may need to change this somehow to check for a null value?
                 type = TokenType.IDENTIFIER;
@@ -114,6 +124,8 @@ namespace project2
             AddToken(type);
         }
 
+
+        // Check if in the alphabet or an underscore        
         private bool IsAlpha(char c) {
             if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'z') || (c == '_')) {
                 return true;
@@ -121,6 +133,8 @@ namespace project2
             return false;
         }
 
+
+        // Check if in the alphabet, underscore, or is a number
         private bool IsAlphaNumeric(char c) {
             if ((char.IsDigit(c)) || (IsAlpha(c))) {
                 return true;
@@ -128,11 +142,13 @@ namespace project2
             return false;
         }
 
+        // Get an entire number with decimal
         private void Number() {
             while (IsDigit(Peek())) {
                 Advance();
             }
 
+            // If we reach a decimal while scanning the number, 
             if (Peek() == '.' && IsDigit(PeekNext())) {
                 // Consume the '.'
                 Advance();
@@ -140,66 +156,83 @@ namespace project2
                     Advance();
                 }
             }
-
-            AddToken(TokenType.NUMBER, source.Substring(start, current - start)); // may need to be a different length
+            AddToken(TokenType.NUMBER, double.Parse(source.Substring(start, current - start))); // may need to be a different length and cast to number?
         }
 
+        // Read until end of string 
         private void String() {
+
+            // Check for end quote operator
             while (Peek() != '"' && !IsAtEnd()) {
+                // Advance if at end of line
                 if (Peek() == '\n') {
                     line++;
-                    Advance();
-                } 
-                if (IsAtEnd()) {
-                    Lox.Error(line, "Unterminated String");
-                    return;
                 }
-
                 Advance();
-
-                string value = source.Substring(start + 1, current - start - 2); // Subtract 2 to remove quotes
-                AddToken(TokenType.STRING, value);
             }
-        }
+            // If at the end of the file
+            if (IsAtEnd()) {
+                Lox.Error(line, "Unterminated String");
+                return;
+            }
 
+            // Advance to next character which is the end quote 
+            Advance();
+
+            string value = source.Substring(start + 1, current - start - 2); // Subtract 2 to remove quotes
+            AddToken(TokenType.STRING, value);
+        }
+        
+
+        // Check if current char matches the passed in char
         private bool Match(char expected) {
             if (IsAtEnd()) return false;
             if (source[current] != expected) return false;
-
+            // Return true and increment if the character matches
             current ++;
             return true;
         }
 
+        // Return the next character
         private char Peek() {
             if (IsAtEnd()) return '\0';
             return source[current];
         }
 
+        // Return 2 characters ahead if we can
         private char PeekNext() {
-            if (IsAtEnd()) {
+            if (current + 1 >= source.Length) {
                 return '\0';
             }
-            return source[current++];
+            return source[current+1];
         }
 
+
+        // Check if input is number
         private bool IsDigit(char c) {
             return c >= '0' && c <= '9';
         }
 
+
+        // Check if at the end of file
         private bool IsAtEnd() {
             return current >= source.Length;
         }
 
+        // Advance current and return the old value
         private char Advance() {
             var prev = current;
             current++;
             return source[prev];
         }
 
+        // Add an empty token to the dictionary
         private void AddToken(TokenType type) {
             AddToken(type, null);
         }
 
+
+        // Add a token to the dictionary with a value
         private void AddToken(TokenType type, object literal) {
             string text = source.Substring(start, current);
             tokens.Add(new Token(type, text, literal, line));
