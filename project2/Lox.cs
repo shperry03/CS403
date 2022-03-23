@@ -8,6 +8,8 @@ namespace project2
         
         static Boolean hadError = false;
 
+
+        // Read terminal input and run if correct
         public static void Main(string[] args) {
 
             if (args.Length > 1) {
@@ -46,7 +48,8 @@ namespace project2
                 hadError = false; // reset error flag 
             }
         }
-
+        
+        // Main execution command
         private static void Run(string source) {
             var scanner = new Scanner(source);
             var tokens = scanner.ScanTokens();
@@ -56,10 +59,12 @@ namespace project2
             }
         }
 
+        // Error method, just calls report for now
         public static void Error(int line, string message) {
             Report(line, "", message);
         }
 
+        // Report an error message to console
         private static void Report(int line, String where, String message) {
             Console.WriteLine("[line " + line + "] Error" + where + ": " + message);
             hadError = true;

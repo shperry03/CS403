@@ -1,4 +1,7 @@
 
+/*
+    TokenType represents all of the possible types in the Scanner's dictionary
+*/
 enum TokenType {
     // Single-character tokens.
     LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,

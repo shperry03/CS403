@@ -1,6 +1,10 @@
 using System;
 
 namespace project2 {
+
+    /*
+        Token class used to represent Tokens 
+    */
     class Token {
         readonly TokenType type;
         readonly string lexeme;
