@@ -44,11 +44,11 @@ namespace project2
 
         public class Literal: Expr
         {
-            Literal(Object value) {
+            Literal(object value) {
                 this.value = value;
             }
 
-            Object value;
+            object value;
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.visitLiteralExpr(this);
