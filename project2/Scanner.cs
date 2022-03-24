@@ -234,7 +234,7 @@ namespace project2
 
         // Add a token to the dictionary with a value
         private void AddToken(TokenType type, object literal) {
-            string text = source.Substring(start, current);
+            string text = source.Substring(start, current - start);
             tokens.Add(new Token(type, text, literal, line));
         }
     }
