@@ -14,15 +14,15 @@ namespace project2
 
         public class Binary: Expr
         {
+            Expr left;
+            Token op;
+            Expr right;
             public Binary(Expr left, Token op, Expr right) {
                 this.left = left;
                 this.op = op;
                 this.right = right;
             }
 
-            Expr left;
-            Token op;
-            Expr right;
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.visitBinaryExpr(this);
