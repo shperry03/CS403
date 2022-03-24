@@ -54,6 +54,16 @@ namespace project2
             var scanner = new Scanner(source);
             var tokens = scanner.ScanTokens();
 
+            Parser parser = new Parser(tokens);
+            Expr expression = parser.Parse();
+
+            // Stop if there was a syntax error.
+            if (hadError) {
+                return;
+            }
+
+            Console.WriteLine(new AstPrinter().Print(expression));
+
             foreach (var token in tokens) {
                 Console.WriteLine(token);
             }
@@ -68,6 +78,14 @@ namespace project2
         private static void Report(int line, String where, String message) {
             Console.WriteLine("[line " + line + "] Error" + where + ": " + message);
             hadError = true;
+        }
+
+        public static void Error(Token token, string message) {
+            if (token.type == TokenType.EOF) {
+                Report(token.line, " at end", message);
+            } else {
+                Report(token.line, " at '" + token.lexeme + "'", message);
+            }
         }
 
     }
