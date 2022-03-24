@@ -6,26 +6,27 @@ namespace project2
     {
         public interface Visitor<T>
         {
-            T visitBinaryExpr(Binary expr);
-            T visitGroupingExpr(Grouping expr);
-            T visitLiteralExpr(Literal expr);
-            T visitUnaryExpr(Unary expr);
+            public T VisitBinaryExpr(Binary expr);
+            public T VisitGroupingExpr(Grouping expr);
+            public T VisitLiteralExpr(Literal expr);
+            public T VisitUnaryExpr(Unary expr);
         }
 
         public class Binary: Expr
         {
-            Expr left;
-            Token op;
-            Expr right;
+            
             public Binary(Expr left, Token op, Expr right) {
                 this.left = left;
                 this.op = op;
                 this.right = right;
             }
 
+            public Expr left;
+            public Token op;
+            public Expr right;
             public override T Accept<T>(Visitor<T> visitor)
             {
-                return visitor.visitBinaryExpr(this);
+                return visitor.VisitBinaryExpr(this);
             }
         }
 
@@ -35,10 +36,10 @@ namespace project2
                 this.expression = expression;
             }
 
-            Expr expression;
+            public Expr expression;
             public override T Accept<T>(Visitor<T> visitor)
             {
-                return visitor.visitGroupingExpr(this);
+                return visitor.VisitGroupingExpr(this);
             }
         }
 
@@ -48,10 +49,10 @@ namespace project2
                 this.value = value;
             }
 
-            object value;
+            public object value;
             public override T Accept<T>(Visitor<T> visitor)
             {
-                return visitor.visitLiteralExpr(this);
+                return visitor.VisitLiteralExpr(this);
             }
         }
 
@@ -62,11 +63,11 @@ namespace project2
                 this.right = right;
             }
 
-            Token op;
-            Expr right;
+            public Token op;
+            public Expr right;
             public override T Accept<T>(Visitor<T> visitor)
             {
-                return visitor.visitUnaryExpr(this);
+                return visitor.VisitUnaryExpr(this);
             }
         }
         public abstract T Accept<T>(Visitor<T> visitor);

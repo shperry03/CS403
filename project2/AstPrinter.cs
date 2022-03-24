@@ -10,23 +10,23 @@ namespace project2
             return expr.Accept(this);
         }
 
-        public string visitBinaryExpr(Expr.Binary expr)
+        public string VisitBinaryExpr(Expr.Binary expr)
         {
             return parenthesize(expr.op.lexeme, expr.left, expr.right);
         }
 
-        public override string visitGroupingExpr(Expr.Grouping expr)
+        public string VisitGroupingExpr(Expr.Grouping expr)
         {
             return parenthesize("group", expr.expression);
         }
 
-        public override string visitLiteralExpr(Expr.Literal expr)
+        public string VisitLiteralExpr(Expr.Literal expr)
         {
             if (expr.value == null) return "nil";
             return expr.value.ToString();
         }
 
-        public override string visitUnaryExpr(Expr.Unary expr)
+        public string VisitUnaryExpr(Expr.Unary expr)
         {
             return parenthesize(expr.op.lexeme, expr.right);
         }
