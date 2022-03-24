@@ -1,23 +1,22 @@
 using System.Text;
-using System;
 
 namespace project2
 {
     public class AstPrinter : Expr.Visitor<string>
     {
-        string print(Expr expr)
+        public string Print(Expr expr)
         {
             return expr.Accept(this);
         }
 
         public string VisitBinaryExpr(Expr.Binary expr)
         {
-            return parenthesize(expr.op.lexeme, expr.left, expr.right);
+            return Parenthesize(expr.op.lexeme, expr.left, expr.right);
         }
 
         public string VisitGroupingExpr(Expr.Grouping expr)
         {
-            return parenthesize("group", expr.expression);
+            return Parenthesize("group", expr.expression);
         }
 
         public string VisitLiteralExpr(Expr.Literal expr)
@@ -28,10 +27,10 @@ namespace project2
 
         public string VisitUnaryExpr(Expr.Unary expr)
         {
-            return parenthesize(expr.op.lexeme, expr.right);
+            return Parenthesize(expr.op.lexeme, expr.right);
         }
 
-        private string parenthesize(string name, params Expr[] exprs)
+        private string Parenthesize(string name, params Expr[] exprs)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -45,7 +44,8 @@ namespace project2
             return sb.ToString();
         }
 
-        public void Main(string[] args)
+        /*
+        public static void Main(string[] args)
         {
             Expr expression = new Expr.Binary(
                 new Expr.Unary(
@@ -57,7 +57,9 @@ namespace project2
                 )
             );
 
-            Console.WriteLine(new AstPrinter().print(expression));
+            Console.WriteLine(new AstPrinter().Print(expression));
         }
+
+        */
     }
 }

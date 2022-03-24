@@ -9,6 +9,7 @@ namespace project2
         static Boolean hadError = false;
 
 
+        /*
         // Read terminal input and run if correct
         public static void Main(string[] args) {
 
@@ -21,7 +22,7 @@ namespace project2
             } else {
                 RunPrompt();
             }
-        }
+        }*/
 
         /*
         Execute code from filepath
