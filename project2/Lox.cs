@@ -63,10 +63,6 @@ namespace project2
             }
 
             Console.WriteLine(new AstPrinter().Print(expression));
-
-            foreach (var token in tokens) {
-                Console.WriteLine(token);
-            }
         }
 
         // Error method, just calls report for now
