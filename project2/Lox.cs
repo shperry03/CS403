@@ -6,8 +6,9 @@ namespace project2
 
     class Lox {
         
+        private static readonly Interpreter interpreter = new Interpreter();
         static Boolean hadError = false;
-
+        static Boolean hadRuntimeError = false;
 
         
         // Read terminal input and run if correct
@@ -33,6 +34,9 @@ namespace project2
             // Add error handling
             if (hadError) {
                 Environment.Exit(65);
+            }
+            if (hadRuntimeError) {
+                Environment.Exit(70);
             }
         }
 
@@ -63,12 +67,16 @@ namespace project2
                 return;
             }
 
-            Console.WriteLine(new AstPrinter().Print(expression));
+            interpreter.interpret(expression);
         }
 
         // Error method, just calls report for now
         public static void Error(int line, string message) {
             Report(line, "", message);
+        }
+
+        public static void RuntimeError(RuntimeError error) {
+            Console.WriteLine(error.Message + "\n[line " + error.token.line + "]");
         }
 
         // Report an error message to console
