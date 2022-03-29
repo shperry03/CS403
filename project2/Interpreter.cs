@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace project2 {
     class Interpreter : Expr.Visitor<object>, Stmt.Visitor<object>
     {
-
+        private Environment environment = new Environment();
         public object VisitGroupingExpr(Expr.Grouping expr)
         {
             return Evaluate(expr.expression);
@@ -29,6 +29,10 @@ namespace project2 {
 
             // unreachable
             return null;
+        }
+
+        public object VisitVariableExpr(Expr.Variable expr) {
+            return environment.Get(expr.name);
         }
 
         private void CheckNumberOperand(Token op, object operand) {
@@ -92,6 +96,25 @@ namespace project2 {
             stmt.Accept(this);
         }
 
+        public void ExecuteBlock(List<Stmt> statements, Environment environment){
+            Environment previous = this.environment;
+
+            try{
+                this.environment = environment;
+
+                foreach (Stmt statement in statements){
+                    Execute(statement);
+                }
+            } finally {
+                this.environment = previous;
+            }
+        }
+
+        public object VisitBlockStmt(Stmt.Block stmt){
+            ExecuteBlock(stmt.statements, new Environment(environment));
+            return null;
+        }
+
         public object VisitExpressionStmt(Stmt.Expression stmt){
             Evaluate(stmt.expression);
             return null;
@@ -101,6 +124,23 @@ namespace project2 {
             object value = Evaluate(stmt.expression);
             Console.WriteLine(Stringify(value));
             return null;
+        }
+
+        public object VisitVarStmt(Stmt.Var stmt){
+            object value = null;
+            if (stmt.initializer != null){
+                value = Evaluate(stmt.initializer);
+            }
+
+            environment.Define(stmt.name.lexeme, value);
+
+            return null;
+        }
+
+        public object VisitAssignExpr(Expr.Assign expr){
+            object value = Evaluate(expr.value);
+            environment.Assign(expr.name, value);
+            return value;
         }
 
         public object VisitBinaryExpr(Expr.Binary expr)

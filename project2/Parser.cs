@@ -15,11 +15,21 @@ namespace project2
         }
 
         private Expr Expression() {
-            return Equality();
+            return Assignment();
         }
-        
+
+        private Stmt Declaration(){
+            try{
+                if (Match(TokenType.VAR)) return VarDeclaration();
+                return Statement();
+            } catch (ParseError error){
+                Synchronize();
+                return null;
+            }
+        }
         private Stmt Statement() {
             if(Match(TokenType.PRINT)) return PrintStatement();
+            if(Match(TokenType.LEFT_BRACE)) return new Stmt.Block(Block());
 
             return ExpressionStatement();
         }
@@ -30,16 +40,57 @@ namespace project2
             return new Stmt.Print(value);
         }
 
+        private Stmt VarDeclaration() {
+            Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
+
+            Expr initializer = null;
+            if (Match(TokenType.EQUAL)) {
+                initializer = Expression();
+            }
+
+            Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+            return new Stmt.Var(name, initializer);
+        }
+
         private Stmt ExpressionStatement(){
             Expr expr = Expression();
             Consume(TokenType.SEMICOLON, "Expect ';' after expression.");
             return new Stmt.Expression(expr);
         }
 
+        private List<Stmt> Block(){
+            List<Stmt> statements = new List<Stmt>();
+
+            while(!Check(TokenType.RIGHT_BRACE) && !IsAtEnd()){
+                statements.Add(Declaration());
+            }
+
+            Consume(TokenType.RIGHT_BRACE, "Expect '}' after block.");
+            return statements;
+        }
+
+        private Expr Assignment(){
+            Expr expr = Equality();
+
+            if (Match(TokenType.EQUAL)){
+                Token equals = Previous();
+                Expr value = Assignment();
+
+                if (expr is Expr.Variable){
+                    Token name = ((Expr.Variable)expr).name;
+                    return new Expr.Assign(name, value);
+                }
+
+                Error(equals, "Invalid assignment target.");
+            }
+
+            return expr;
+        }
+
         public List<Stmt> Parse() {
             var statements = new List<Stmt>();
             while(!IsAtEnd()){
-                statements.Add(Statement());
+                statements.Add(Declaration());
             }
 
             return statements;
@@ -116,6 +167,10 @@ namespace project2
 
             if (Match(TokenType.NUMBER, TokenType.STRING)) {
                 return new Expr.Literal(Previous().literal);
+            }
+
+            if (Match(TokenType.IDENTIFIER)){
+                return new Expr.Variable(Previous());
             }
 
             if (Match(TokenType.LEFT_PAREN)) {
