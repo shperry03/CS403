@@ -1,15 +1,30 @@
-
-
 namespace project2
 {
     public abstract class Expr
     {
         public interface Visitor<T>
         {
+            public T VisitAssignExpr(Assign expr);
             public T VisitBinaryExpr(Binary expr);
             public T VisitGroupingExpr(Grouping expr);
             public T VisitLiteralExpr(Literal expr);
             public T VisitUnaryExpr(Unary expr);
+            public T VisitVariableExpr(Variable expr);
+        }
+
+        public class Assign: Expr
+        {
+            public Assign(Token name, Expr value) {
+                this.name = name;
+                this.value = value;
+            }
+
+            public Token name;
+            public Expr value;
+            public override T Accept<T>(Visitor<T> visitor)
+            {
+                return visitor.VisitAssignExpr(this);
+            }
         }
 
         public class Binary: Expr
@@ -70,8 +85,20 @@ namespace project2
                 return visitor.VisitUnaryExpr(this);
             }
         }
-        public abstract T Accept<T>(Visitor<T> visitor);
 
-    
+        public class Variable: Expr
+        {
+            public Variable(Token name) {
+                this.name = name;
+            }
+
+            public Token name;
+            public override T Accept<T>(Visitor<T> visitor)
+            {
+                return visitor.VisitVariableExpr(this);
+            }
+        }
+
+        public abstract T Accept<T>(Visitor<T> visitor);
     }
 }

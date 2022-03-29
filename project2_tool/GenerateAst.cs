@@ -34,7 +34,7 @@ namespace project2_tool
             newStmtList.Add("Print      : Expr expression");
             newStmtList.Add("Var        : Token name, Expr initializer");
 
-            defineAst(outputDir, "Expr", exprList);
+            defineAst(outputDir, "Stmt", newStmtList);
         }
 
         private static void defineAst(string OutputDir, string BaseName, List<string> types)
