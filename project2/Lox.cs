@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace project2
 {
@@ -60,14 +61,14 @@ namespace project2
             var tokens = scanner.ScanTokens();
 
             Parser parser = new Parser(tokens);
-            Expr expression = parser.Parse();
+            List<Stmt> statements = parser.Parse();
 
             // Stop if there was a syntax error.
             if (hadError) {
                 return;
             }
 
-            interpreter.interpret(expression);
+            interpreter.interpret(statements);
         }
 
         // Error method, just calls report for now

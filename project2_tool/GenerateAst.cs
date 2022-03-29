@@ -25,7 +25,12 @@ namespace project2_tool
             exprList.Add("Literal  : Object value");
             exprList.Add("Unary    : Token operator, Expr right");
 
-            defineAst(outputDir, "Expr", exprList);
+            var newStmtList = new List<string>();
+
+            newStmtList.Add("Expression : Expr expression");
+            newStmtList.Add("Print      : Expr expression");
+
+            defineAst(outputDir, "Stmt", newStmtList);
         }
 
         private static void defineAst(string OutputDir, string BaseName, List<string> types)
