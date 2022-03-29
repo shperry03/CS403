@@ -20,17 +20,21 @@ namespace project2_tool
 
             var exprList = new List<string>();
 
+            exprList.Add("Assign   : Token name, Expr value");
             exprList.Add("Binary   : Expr left, Token operator, Expr right");
             exprList.Add("Grouping : Expr expression");
             exprList.Add("Literal  : Object value");
             exprList.Add("Unary    : Token operator, Expr right");
+            exprList.Add("Variable : Token name");
 
             var newStmtList = new List<string>();
 
+            newStmtList.Add("Block      : List<Stmt> statements");
             newStmtList.Add("Expression : Expr expression");
             newStmtList.Add("Print      : Expr expression");
+            newStmtList.Add("Var        : Token name, Expr initializer");
 
-            defineAst(outputDir, "Stmt", newStmtList);
+            defineAst(outputDir, "Expr", exprList);
         }
 
         private static void defineAst(string OutputDir, string BaseName, List<string> types)
