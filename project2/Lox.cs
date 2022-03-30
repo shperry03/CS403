@@ -17,7 +17,7 @@ namespace project2
 
             if (args.Length > 1) {
                 Console.WriteLine("Usage: jlox [script]");
-                Environment.Exit(64);
+                System.Environment.Exit(64);
 
             } else if (args.Length == 1) {
                 RunFile(args[0]);
@@ -34,10 +34,10 @@ namespace project2
             Run(sourceFile);
             // Add error handling
             if (hadError) {
-                Environment.Exit(65);
+                System.Environment.Exit(65);
             }
             if (hadRuntimeError) {
-                Environment.Exit(70);
+                System.Environment.Exit(70);
             }
         }
 
