@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace project2
 {
-    public class Environment{
+    public class Environment {
 
         public Environment enclosing;
         private Dictionary<string, object> values = new Dictionary<string, object>();
