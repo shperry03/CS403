@@ -117,9 +117,11 @@ namespace project2
 
             // Check the substring and add it to our dictionary
             var text = source.Substring(start, current - start); 
-            TokenType type = keywords[text];
+            TokenType type;
             if (!keywords.ContainsKey(text)) { // may need to change this somehow to check for a null value?
                 type = TokenType.IDENTIFIER;
+            } else {
+                type = keywords[text];
             }
             AddToken(type);
         }

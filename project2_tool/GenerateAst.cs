@@ -24,6 +24,7 @@ namespace project2_tool
             exprList.Add("Binary   : Expr left, Token operator, Expr right");
             exprList.Add("Grouping : Expr expression");
             exprList.Add("Literal  : Object value");
+            exprList.Add("Logical  : Expr left, Token operator, Expr right");
             exprList.Add("Unary    : Token operator, Expr right");
             exprList.Add("Variable : Token name");
 
@@ -31,9 +32,13 @@ namespace project2_tool
 
             newStmtList.Add("Block      : List<Stmt> statements");
             newStmtList.Add("Expression : Expr expression");
+            newStmtList.Add("If         : Expr condition, Stmt thenBranch," +
+                                        " Stmt elseBranch");
             newStmtList.Add("Print      : Expr expression");
             newStmtList.Add("Var        : Token name, Expr initializer");
+            newStmtList.Add("While      : Expr condition, Stmt body");
 
+            //defineAst(outputDir, "Expr", exprList);
             defineAst(outputDir, "Stmt", newStmtList);
         }
 

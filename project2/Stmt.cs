@@ -10,6 +10,40 @@ namespace project2
             public T VisitExpressionStmt(Expression stmt);
             public T VisitPrintStmt(Print stmt);
             public T VisitVarStmt(Var stmt);
+            public T VisitIfStmt(If stmt);
+            public T VisitWhileStmt(While stmt);
+        }
+
+        public class If: Stmt
+        {
+            public If(Expr condition, Stmt thenBranch, Stmt elseBranch) {
+                this.condition = condition;
+                this.thenBranch = thenBranch;
+                this.elseBranch = elseBranch;
+            }
+
+            public Expr condition {get;}
+            public Stmt thenBranch {get;}
+            public Stmt elseBranch {get;}
+            public override T Accept<T>(Visitor<T> visitor)
+            {
+                return visitor.VisitIfStmt(this);
+            }
+        }
+
+        public class While: Stmt
+        {
+            public While(Expr condition, Stmt body) {
+                this.condition = condition;
+                this.body = body;
+            }
+
+          public Expr condition;
+          public Stmt body;
+            public override T Accept<T>(Visitor<T> visitor)
+            {
+                return visitor.VisitWhileStmt(this);
+            }
         }
 
         public class Block: Stmt

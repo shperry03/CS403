@@ -8,6 +8,7 @@ namespace project2
             public T VisitBinaryExpr(Binary expr);
             public T VisitGroupingExpr(Grouping expr);
             public T VisitLiteralExpr(Literal expr);
+            public T VisitLogicalExpr(Logical expr);
             public T VisitUnaryExpr(Unary expr);
             public T VisitVariableExpr(Variable expr);
         }
@@ -83,6 +84,23 @@ namespace project2
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.VisitUnaryExpr(this);
+            }
+        }
+
+        public class Logical: Expr
+        {
+            public Logical(Expr left, Token oper, Expr right) {
+                this.left = left;
+                this.oper = oper;
+                this.right = right;
+            }
+
+          public Expr left;
+          public  Token oper;
+          public  Expr right;
+            public override T Accept<T>(Visitor<T> visitor)
+            {
+                return visitor.VisitLogicalExpr(this);
             }
         }
 

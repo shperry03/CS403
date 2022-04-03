@@ -5,11 +5,11 @@ namespace project2
 {
     public class Environment {
 
-        public Environment enclosing;
+        public Environment enclosing {get; private set; }
         private Dictionary<string, object> values = new Dictionary<string, object>();
         
         public Environment(){
-            enclosing = null;
+            this.enclosing = null;
         }
 
         public Environment(Environment enclosing){
