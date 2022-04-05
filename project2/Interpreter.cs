@@ -1,10 +1,18 @@
 using System;
 using System.Collections.Generic;
 
+
 namespace project2 {
-    class Interpreter : Expr.Visitor<object>, Stmt.Visitor<object>
+    public class Interpreter : Expr.Visitor<object>, Stmt.Visitor<object>
     {
-        private Environment environment = new Environment();
+        public static Environment globals = new Environment();
+
+        public Environment environment = globals;
+
+        public Interpreter(){
+            
+        }
+
         public object VisitGroupingExpr(Expr.Grouping expr)
         {
             return Evaluate(expr.expression);
@@ -136,6 +144,12 @@ namespace project2 {
             return null;
         }
 
+        public object VisitFunctionStmt(Stmt.Function stmt){
+            LoxFunction function = new LoxFunction(stmt);
+            environment.Define(stmt.name.lexeme, function);
+            return null;
+        }
+
         public object VisitIfStmt(Stmt.If stmt) { // override?
             if (IsTruthy(Evaluate(stmt.condition))) {
                 Execute(stmt.thenBranch);
@@ -150,6 +164,12 @@ namespace project2 {
             object value = Evaluate(stmt.expression);
             Console.WriteLine(Stringify(value));
             return null;
+        }
+
+        public object VisitReturnStmt(Stmt.Return stmt){
+            object val = null;
+            if(stmt.value != null) val= Evaluate(stmt.value);
+            throw new Return(val);
         }
 
         public object VisitVarStmt(Stmt.Var stmt){
@@ -221,6 +241,26 @@ namespace project2 {
 
             // Unreachable
             return null;
+        }
+
+        public object VisitCallExpr(Expr.Call expr) {
+            object callee = Evaluate(expr.callee);
+
+            List<object> arguments = new List<object>();
+
+            foreach (Expr argument in expr.arguments){
+                arguments.Add(Evaluate(argument));
+            }
+
+            if(!(callee is LoxCallable)) {
+                throw new RuntimeError(expr.paren, "Can only call functions and classes.");
+            }
+
+            LoxCallable function = (LoxCallable) callee;
+            if(arguments.Count != function.Arity()){
+                throw new RuntimeError(expr.paren, "Expected " + function.Arity() + " arguments but got " + arguments.Count + ".");
+            }
+            return function.Call(this, arguments);
         }
 
         public void interpret(List<Stmt> statements) {

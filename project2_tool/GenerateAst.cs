@@ -22,6 +22,7 @@ namespace project2_tool
 
             exprList.Add("Assign   : Token name, Expr value");
             exprList.Add("Binary   : Expr left, Token operator, Expr right");
+            exprList.Add("Call     : Expr callee, Token paren, List<Expr> arguments");
             exprList.Add("Grouping : Expr expression");
             exprList.Add("Literal  : Object value");
             exprList.Add("Logical  : Expr left, Token operator, Expr right");
@@ -32,14 +33,17 @@ namespace project2_tool
 
             newStmtList.Add("Block      : List<Stmt> statements");
             newStmtList.Add("Expression : Expr expression");
+            newStmtList.Add("Function   : Token name, List<Token> params," +
+                                        " List<Stmt> body");
             newStmtList.Add("If         : Expr condition, Stmt thenBranch," +
                                         " Stmt elseBranch");
             newStmtList.Add("Print      : Expr expression");
+            newStmtList.Add("Return     : Token keyword, Expr value");
             newStmtList.Add("Var        : Token name, Expr initializer");
             newStmtList.Add("While      : Expr condition, Stmt body");
 
             //defineAst(outputDir, "Expr", exprList);
-            defineAst(outputDir, "Stmt", newStmtList);
+            defineAst(outputDir, "Expr", exprList);
         }
 
         private static void defineAst(string OutputDir, string BaseName, List<string> types)
