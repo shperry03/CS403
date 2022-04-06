@@ -8,24 +8,26 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\embui\\.nuget\\packages\\": {}
+    "C:\\Users\\sperr\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\embui\\pythonprojects\\CS403\\Project_2\\CS403\\CS403\\project2\\project2.csproj",
+      "projectUniqueName": "C:\\Users\\sperr\\OneDrive\\Desktop\\Classes\\CS Courses\\CS403\\CS403\\CS403\\project2\\project2.csproj",
       "projectName": "project2",
-      "projectPath": "C:\\Users\\embui\\pythonprojects\\CS403\\Project_2\\CS403\\CS403\\project2\\project2.csproj",
-      "packagesPath": "C:\\Users\\embui\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\embui\\pythonprojects\\CS403\\Project_2\\CS403\\CS403\\project2\\obj\\",
+      "projectPath": "C:\\Users\\sperr\\OneDrive\\Desktop\\Classes\\CS Courses\\CS403\\CS403\\CS403\\project2\\project2.csproj",
+      "packagesPath": "C:\\Users\\sperr\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\sperr\\OneDrive\\Desktop\\Classes\\CS Courses\\CS403\\CS403\\CS403\\project2\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\embui\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\sperr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -56,7 +58,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.417\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.202\\RuntimeIdentifierGraph.json"
       }
     }
   }
