@@ -6,6 +6,11 @@ namespace project2
     {
         public interface Visitor<T>
         {
+            /*
+                The interface for Expr class that allows us to implement these functions 
+                in the interpreter class. All expression classes must inherit this class
+                and these funcitons.
+            */
             public T VisitAssignExpr(Assign expr);
             public T VisitBinaryExpr(Binary expr);
             public T VisitCallExpr(Call expr);
@@ -16,6 +21,13 @@ namespace project2
             public T VisitVariableExpr(Variable expr);
         }
 
+        /*
+            The Assign subclass of Expression.
+            Allows us to implement an assignment and when called:
+
+            create a variable : name
+            assign a value to variable : value
+        */
         public class Assign: Expr
         {
             public Assign(Token name, Expr value) {
@@ -30,7 +42,17 @@ namespace project2
                 return visitor.VisitAssignExpr(this);
             }
         }
+        /*
+            The Binary subclass of Expression.
+            Allows us to account for operators and setting arithmetic expressions.
 
+            1 + 2
+            lef = 1
+            op = +
+            right = 2
+
+            Breaking a 2 argument arithmetic expression into individual parts.
+        */
         public class Binary: Expr
         {
             
@@ -49,7 +71,12 @@ namespace project2
             }
         }
 
-
+        /*
+            The Call subclass for expression.
+            This allows us to call functions in lox code.
+            
+            Passing paramters and calling the function is possible here.
+        */
         public class Call: Expr
         {
             public Call(Expr callee, Token paren, List<Expr> arguments) {
@@ -67,6 +94,10 @@ namespace project2
             }
         }
 
+        /*
+            The Grouping subclass for Expression.
+            Allows us to group expressions using parentheses.
+        */
         public class Grouping: Expr
         {
             public Grouping(Expr expression) {
@@ -80,6 +111,12 @@ namespace project2
             }
         }
 
+        /*
+            The Literal subclass for Expression.
+
+            This allows us to have literal values like Numbers, Strings, Booleans, and nil.
+            Accounts for these literal expressions.
+        */
         public class Literal: Expr
         {
             public Literal(object value) {
@@ -93,6 +130,13 @@ namespace project2
             }
         }
 
+        /*
+            The Unary subclass for Expression.
+
+            Accounts for operators on a single value.
+
+            Allows ! and - for different values of expressions and numbers.
+        */
         public class Unary: Expr
         {
             public Unary(Token op, Expr right) {
@@ -107,6 +151,12 @@ namespace project2
                 return visitor.VisitUnaryExpr(this);
             }
         }
+
+        /*
+            The Logical subclass for Expression.
+
+            Implements logical expressions in our lox code and interpreter.
+        */
 
         public class Logical: Expr
         {
@@ -125,6 +175,14 @@ namespace project2
             }
         }
 
+
+        /*
+            The variable subclass for Expression.
+
+            Allows us to have a variable expresssion.
+
+            Declaring a variable name and using it expressions.
+        */
         public class Variable: Expr
         {
             public Variable(Token name) {
