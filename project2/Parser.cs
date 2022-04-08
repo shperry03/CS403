@@ -54,43 +54,58 @@ namespace project2
             return ExpressionStatement();
         }
 
+        /*
+        Performs 'desugaring' on the for statement, essentially turning it into a Lox while statement
+        */
         private Stmt ForStatement() {
+            // If no ( after for, throw error
             Consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.");
 
+            // Grab the for loop's initializer
             Stmt initializer;
-            if (Match(TokenType.SEMICOLON)) {
+            if (Match(TokenType.SEMICOLON)) { // Initializer has been omitted
                 initializer = null;
-            } else if (Match(TokenType.VAR)) {
+            } else if (Match(TokenType.VAR)) { // Initializer is variable declaration
                 initializer = VarDeclaration();
-            } else {
+            } else { // Otherwise, initializer must be an expression
                 initializer = ExpressionStatement();
             }
 
+            // Grab the for loop's condition
             Expr condition = null;
-            if (!Check(TokenType.SEMICOLON)) {
+            if (!Check(TokenType.SEMICOLON)) { // If next token is not a semicolon, get the expression
                 condition = Expression();
             }
+            // Throw an error if no semicolon
             Consume(TokenType.SEMICOLON, "Expect ';' after loop condition.");
 
+            // Grab the for loop's increment value
             Expr increment = null;
-            if (!Check(TokenType.RIGHT_PAREN)) {
+            if (!Check(TokenType.RIGHT_PAREN)) { // If no right parentheses, we have an expression
                 increment = Expression();
             }
-            Consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
+            Consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses."); // If no right parentheses, throw error
+
+            // Create the Statement representing the body
             Stmt body = Statement();
 
+            // If there is an increment, it must execute after the body in each iteration.
             if (increment != null) {
+                // Replace the body with a block containing original body followed by an expression that evaluates the increment
                 body = new Stmt.Block(
                     new List<Stmt> {body, new Stmt.Expression(increment)}                    
                 );
             }
-
+            // If there is no condition, we will have an infinite loop
             if (condition == null) {
                 condition = new Expr.Literal(true);
             }
+            // Replace body with a while statement, passing in the condition and body
             body = new Stmt.While(condition, body);
 
+            // If there is an initializer, it must run once before the entire loop.
             if (initializer != null) {
+                // Replace the whole statement with a block that runs the initializer and then executes the loop
                 body = new Stmt.Block(
                     new List<Stmt> {initializer, body}
                 );
@@ -98,17 +113,27 @@ namespace project2
             return body;
         }
 
+        /*
+        Handles if statements in Lox.
+        Saves various variables locally, and then passes them to a Stmt condition that is returned.
+        */
         private Stmt IfStatement() {
+            // If no ( after if, we have an error
             Consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.");
+            // Get the expression that is inside the ( )
             Expr condition = Expression();
+            // If no ) after condition, throw an error
             Consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition.");
 
+            // thenBranch represents what we do if the condition is true
             Stmt thenBranch = Statement();
-            Stmt elseBranch = null;
+            Stmt elseBranch = null; 
+            // Check for an else branch, and create a statement variable for it if it exists
             if (Match(TokenType.ELSE)) {
                 elseBranch = Statement();
             }
 
+            // Create and return a new Stmt.If
             return new Stmt.If(condition, thenBranch, elseBranch);
         }
 
@@ -142,12 +167,20 @@ namespace project2
             return new Stmt.Var(name, initializer);
         }
 
+        /*
+        Creates a Lox While statement from the condition inside parentheses and the body
+        */
         private Stmt WhileStatement() {
+            // If no ( after while, throws error
             Consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
+            // Grab the condition to check for inside ( )
             Expr condition = Expression();
+            // If no ) after condition, throw error
             Consume(TokenType.RIGHT_PAREN, "Expect ')' after condition.");
+            // Grab body that will be executed
             Stmt body = Statement();
 
+            // Return Lox while statement
             return new Stmt.While(condition, body);
         }
 
@@ -210,9 +243,14 @@ namespace project2
             return expr;
         }
 
+        /*
+        Parses a series of or expressions
+        */
         private Expr Or() {
+            // First check for and (higher precedence)
             Expr expr = And();
 
+            // While we have an or condition, create a logical expression based around the operands
             while (Match(TokenType.OR)) {
                 Token oper = Previous();
                 Expr right = And();
@@ -222,9 +260,14 @@ namespace project2
             return expr;
         }
 
+        /*
+        Parses a series of and expressions
+        */
         private Expr And() {
+            // First check for equality (higher precedence)
             Expr expr = Equality();
 
+            // While we have an and condition, create logical expression based around the operands
             while (Match(TokenType.AND)) {
                 Token oper = Previous();
                 Expr right = Equality();

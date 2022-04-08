@@ -35,19 +35,25 @@ namespace project2 {
             return expr.value;
         }
 
+        /*  
+        Evaluates a logical expression by first evaluating the left side, then the right if AND
+        */
         public object VisitLogicalExpr(Expr.Logical expr) {
+            // Evaluate left expression
             Object left = Evaluate(expr.left);
 
+            // If logical is OR, then return left if its truthy
             if (expr.oper.type == TokenType.OR) {
                 if (IsTruthy(left)) {
-                    return left;
+                    return left; // Can return this instead of true because values are truthy in Lox
                 }
-            } else {
+            } else { // AND checker
                 if (!IsTruthy(left)) {
-                    return left;
+                    return left; // Can return this instead of false because non-truthy values are falsey in Lox
                 }
             }
 
+            // Have to check the right side 
             return Evaluate(expr.right);
         }
 
@@ -195,6 +201,9 @@ namespace project2 {
             return null;
         }
 
+        /*
+        Evaluates the condition, executing the thenBranch if true, otherwise execute elseBranch
+        */
         public object VisitIfStmt(Stmt.If stmt) { // override?
             if (IsTruthy(Evaluate(stmt.condition))) {
                 Execute(stmt.thenBranch);
@@ -228,6 +237,9 @@ namespace project2 {
             return null;
         }
 
+        /*
+        Use C#'s while to check for the condition's truthiness, then executes the body until it becomes falsey
+        */
         public object VisitWhileStmt(Stmt.While stmt) {
             while (IsTruthy(Evaluate(stmt.condition))) {
                 Execute(stmt.body);
