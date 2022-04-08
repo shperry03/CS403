@@ -1,8 +1,8 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "C:\\Users\\sperr\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\sperr\\.nuget\\packages"
+      "C:\\Users\\embui\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\embui\\.nuget\\packages"
     ]
   }
 }

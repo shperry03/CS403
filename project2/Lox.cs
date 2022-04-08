@@ -7,7 +7,7 @@ namespace project2
 
     class Lox {
         
-        // Interpreter to use to call on Lox statements
+        // Interpreter to use to call on Lox statements. Static so that successive calls reuse the same interpreter (global variables persist)
         private static readonly Interpreter interpreter = new Interpreter();
 
         // Error flag to set and check
@@ -85,7 +85,7 @@ namespace project2
             }
 
             // Interpret the Lox code of each Stmt
-            interpreter.interpret(statements);
+            interpreter.Interpret(statements);
         }
 
         // Call Report() to provide error information to user
@@ -94,10 +94,11 @@ namespace project2
         }
 
         /*
-        Report runtime error and tell the user the line
+        Report runtime error and tell the user the line, before setting the error flag
         */
         public static void RuntimeError(RuntimeError error) {
-            Console.WriteLine(error.Message + "\n[line " + error.token.line + "]");
+            Console.WriteLine(error.Message + " [line " + error.token.line + "]");
+            hadRuntimeError = true;
         }
 
         /*

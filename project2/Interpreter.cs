@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 
 namespace project2 {
+
+    /*
+    Implements the Visitor pattern. Visit methods must return objects.
+
+    */
     public class Interpreter : Expr.Visitor<object>, Stmt.Visitor<object>
     {
         public static Environment globals = new Environment();
@@ -13,11 +18,18 @@ namespace project2 {
             
         }
 
+        /*
+        Evaluator for expressions inside parentheses. 
+        Uses the Evaluate helper method to recursively evaluate subexpression and retur nit.
+        */
         public object VisitGroupingExpr(Expr.Grouping expr)
         {
             return Evaluate(expr.expression);
         }
 
+        /*
+        Simply return the runtime value of the literal expression
+        */
         public object VisitLiteralExpr(Expr.Literal expr)
         {
             return expr.value;
@@ -39,15 +51,21 @@ namespace project2 {
             return Evaluate(expr.right);
         }
 
+        /*
+        Unary expressions have single subexpressions that we must evaluate first.
+        The unary expression itself then does a little work afterwards.
+        */
         public object VisitUnaryExpr(Expr.Unary expr)
-        {
+        {   
+            // Evaluate the operand expression first
             object right = Evaluate(expr.right);
 
+            // Apply the unary operator to the result of evaluating the operand
             switch (expr.op.type) {
-                case TokenType.MINUS:
+                case TokenType.MINUS: // Check if number is a double, then negate it if so
                     CheckNumberOperand(expr.op, right);
                     return -(double)right;
-                case TokenType.BANG:
+                case TokenType.BANG: // Check if number is logical, then negate it if so
                     return !IsTruthy(right);
             }
 
@@ -59,59 +77,86 @@ namespace project2 {
             return environment.Get(expr.name);
         }
 
+        /*
+        Throws an error if the operand to check is not a number
+        */
         private void CheckNumberOperand(Token op, object operand) {
-            if (operand.GetType() == typeof(double)) {
+            if (operand is double) {
                 return;
             }
             throw new RuntimeError(op, "Operand must be a number.");
         }
 
+        /*
+        Checks if both operands are numbers, and throw an error if not. 
+        */
         private void CheckNumberOperands(Token op, object left, object right) {
-            if (left.GetType() == typeof(double) && right.GetType() == typeof(double)) {
+            if (left is double && right is double) {
                 return;
             }
 
             throw new RuntimeError(op, "Operands must be numbers.");
         }
 
+        /*
+        In Lox, false and nil are falsey, and everything else is truthy. 
+        This method takes in an object and returns true or false based on these rules. 
+        */
         private bool IsTruthy(object obj) {
+            // If object is nil, return false
             if (obj == null) {
                 return false;
             }
-
+            // If object is boolean, return its value
             if (obj.GetType() == typeof(bool)) {
                 return (bool)obj;
             }
+
+            // Otherwise, return true
             return true;
         }
 
+        /*
+        Implements Lox's version of equality between objects. 
+        */
         private bool IsEqual(object a, object b) {
+            // If both objects are nil, return true
             if (a == null && b == null) {
                 return true;
             }
+            // Otherwise if first object is nil, return false
             if (a == null) {
                 return false;
             }
-            
+            // Otherwise, simply check for C# equality
             return a.Equals(b);
         }
 
+        /*
+        Convert the object to a string, whether it is a number or other type of object.
+        */
         private string Stringify(object obj) {
+            // If object is null, return nil string
             if (obj == null) {
                 return "nil";
             }
-
-            if (obj.GetType() == typeof(double)) {
+            
+            // If object is double, convert it to string and drop the .0 suffix if it exists
+            if (obj is double) {
                 string text = obj.ToString();
                 if (text.EndsWith(".0")) {
                     text = text.Substring(0, text.Length - 2);
                 }
                 return text;
             }
-
+            
+            // Otherwise, simply convert using C# ToString()
             return obj.ToString();
         }
 
+        /*
+        Simply send the expression back to the interpreter's visitor implementation, which visits a logical expression.
+        */
         private object Evaluate(Expr expr) {
             return expr.Accept(this);
         }
@@ -197,45 +242,48 @@ namespace project2 {
             return value;
         }
 
+        /*
+        Handles and binary expressions (comparisons, simple math operations).
+        */
         public object VisitBinaryExpr(Expr.Binary expr)
         {
             object left = Evaluate(expr.left);
             object right = Evaluate(expr.right);
 
             switch (expr.op.type) {
-                case TokenType.GREATER:
+                case TokenType.GREATER: // Check that both vals are numbers, and return true if left is > right
                     CheckNumberOperands(expr.op, left, right);
                     return (double)left > (double)right;
-                case TokenType.GREATER_EQUAL:
+                case TokenType.GREATER_EQUAL: // Check that both vals are numbers, and return true if left is >= right
                     CheckNumberOperands(expr.op, left, right);
                     return (double)left >= (double)right;
-                case TokenType.LESS:
+                case TokenType.LESS: // Check that both vals are numbers, andr eturn true if left < right
                     CheckNumberOperands(expr.op, left, right);
                     return (double)left < (double)right;
-                case TokenType.LESS_EQUAL:
+                case TokenType.LESS_EQUAL: // Check that both vals are numbers, and return true if left <= right
                     CheckNumberOperands(expr.op, left, right);
                     return (double)left <= (double)right;
-                case TokenType.MINUS:
+                case TokenType.MINUS: // Check that both vals are numbers, and return left - right
                     CheckNumberOperands(expr.op, left, right);
                     return (double)left - (double)right;
-                case TokenType.PLUS:
-                    if (left.GetType() == typeof(double) && right.GetType() == typeof(double)) { // may need to be is?
+                case TokenType.PLUS: // Check whether vals are numbers or strings, and perform the addition operation on them 
+                    if (left is double && right is double) { 
                         return (double)left + (double)right;
                     }
-                    if (left.GetType() == typeof(string) && right.GetType() == typeof(double)) {
+                    if (left is string && right is string) {
                         return (string)left + (string) right;
                     }
-                    
+                    // If operands are not both numbers or strings, throw RuntimeError
                     throw new RuntimeError(expr.op, "Operands must be two numbers or two strings.");
-                case TokenType.SLASH:
+                case TokenType.SLASH: // Check if both vals are numbers, and return left / right
                     CheckNumberOperands(expr.op, left, right);
                     return (double)left / (double)right;
-                case TokenType.STAR:
+                case TokenType.STAR: // Check if both vals are numbers and return left * right
                     CheckNumberOperands(expr.op, left, right);
                     return (double)left * (double)right;
-                case TokenType.BANG_EQUAL:
+                case TokenType.BANG_EQUAL: // Return true if left operand != right operand
                     return !IsEqual(left, right);
-                case TokenType.EQUAL_EQUAL:
+                case TokenType.EQUAL_EQUAL: // Return true if left operand == right operand
                     return IsEqual(left, right);
             }
 
@@ -263,7 +311,10 @@ namespace project2 {
             return function.Call(this, arguments);
         }
 
-        public void interpret(List<Stmt> statements) {
+        /*
+        TODO
+        */
+        public void Interpret(List<Stmt> statements) {
             try {
                 foreach (Stmt statement in statements){
                     Execute(statement);
