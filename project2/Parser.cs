@@ -3,17 +3,31 @@ using System.Collections.Generic;
 namespace project2
 {
 
+    /*
+    The parser consumes a flat input sequence like scanner, but reads in tokens instead of characters.
+    The list of tokens is stored, and current is used to point to the next token to be parsed.
+    The recursive descent parsing method is used, where the outermost grammar rules is worked first, followed by 
+    nested subexpressions and eventually leaves of the syntax tree.
+    */
     class Parser {
-
+        
+        // ParseError class inherits from System.Exception
         private class ParseError : System.Exception {}
 
+        // List of tokens to be added to
         private readonly List<Token> tokens;
+
+        // Current token to be read
         private int current = 0;
 
+        // Constructor
         public Parser(List<Token> tokens) {
             this.tokens = tokens;
         }
 
+        /*
+        
+        */
         private Expr Expression() {
             return Assignment();
         }
@@ -175,6 +189,9 @@ namespace project2
             return statements;
         }
 
+        /*
+        Returns a new Expr 
+        */
         private Expr Assignment(){
             Expr expr = Or();
 
@@ -217,6 +234,9 @@ namespace project2
             return expr;
         }
 
+        /*
+        Later chapter
+        */
         public List<Stmt> Parse() {
             var statements = new List<Stmt>();
             while(!IsAtEnd()){
@@ -226,9 +246,17 @@ namespace project2
             return statements;
         }
 
+        /*
+        equality -> comparison ( ( "!=" | "==" ) comparison )* ;
+
+        If we find != or ==, then operate on those with the operands to the left and right. 
+
+        */
         private Expr Equality() {
+            // First check for Comparison() since those have higher precedence in Lox. 
             Expr expr = Comparison();
 
+            // Maps to ( ... )* loop --> don't exit until we see something that is not != or ==
             while (Match(TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL)) {
                 Token oper = Previous();
                 Expr right = Comparison();
@@ -238,7 +266,14 @@ namespace project2
             return expr;
         }
 
+        /*
+        comparison --> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+
+        If Equality() never found an equality operator, then it effectively returns a call to Comparison().
+        Check for the symbols in the above grammar, and return a binary expression called on the two operands if found. 
+        */
         private Expr Comparison() {
+            // Check for additiion or subtraction operators first, which have higher precedence. 
             Expr expr = Term();
 
             while (Match(TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL)) {
@@ -250,9 +285,15 @@ namespace project2
             return expr;
         }
 
+        /*
+        Checks for Addition or Subtraction symbols, returning a binary expression on the operands if found. 
+        Othwerise, call Factor() to handle multiplication or division.
+        */
         private Expr Term() {
+            // Call Factor() first, since mult / div have higher precedence
             Expr expr = Factor();
 
+            // Check for - or + operations, and operate on them if found with the values to left and right 
             while (Match(TokenType.MINUS, TokenType.PLUS)) {
                 Token oper = Previous();
                 Expr right = Factor();
@@ -262,9 +303,14 @@ namespace project2
             return expr;
         }
 
+        /*
+        Checks for multiplication or division symbols, returning a binary expression on the operands if found.
+        */
         private Expr Factor() {
+            // Check for Unary() first, since it has higher precedence
             Expr expr = Unary();
 
+            // Check for / or * operators, and operate on them with the values to the left and right if found
             while (Match(TokenType.SLASH, TokenType.STAR)) {
                 Token oper = Previous();
                 Expr right = Unary();
@@ -274,7 +320,11 @@ namespace project2
             return expr;
         }
 
+        /*
+        Checks for ! or - symbols in front of a token, returning a Unary expression on the operand if found. 
+        */
         private Expr Unary() {
+            // BANG and MINUS can both negate a single numeric value
             if (Match(TokenType.BANG, TokenType.MINUS)) {
                 Token oper = Previous();
                 Expr right = Unary();
@@ -314,7 +364,15 @@ namespace project2
             return expr;
         }
 
+        /*
+        Highest level of precedence.
+        primary --> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
+
+        Return a new Expr type corresponding to the TokenType received from Match().
+
+        */
         private Expr Primary() {
+            // Most primarys are straightforward, and can be handled as so
             if (Match(TokenType.FALSE)) {
                 return new Expr.Literal(false);
             }
@@ -332,16 +390,22 @@ namespace project2
             if (Match(TokenType.IDENTIFIER)){
                 return new Expr.Variable(Previous());
             }
-
+            // Parentheses are a bit more complicated, because we must parse the expression inside, and if we don't find a closing ), throw error. 
             if (Match(TokenType.LEFT_PAREN)) {
                 Expr expr = Expression();
                 Consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.");
                 return new Expr.Grouping(expr);
             }
 
+            // Sitting on a token that cannot start an expression, so handle that error 
             throw Error(Peek(), "Expect expression.");
         }
 
+        /*
+        Check to see if the current token is any of the given types.
+        If so, consume the token and return true. Otherwise, return false and leave the token alone.
+
+        */
         private bool Match(params TokenType[] types) {
             foreach (TokenType type in types) {
                 if (Check(type)) {
@@ -352,6 +416,10 @@ namespace project2
             return false;
         }
 
+        /*
+        Check if the next token is the expected type, and consume it if so.
+        Otherwise, throw an error. 
+        */
         private Token Consume(TokenType type, string message) {
             if (Check(type)) {
                 return Advance();
@@ -360,46 +428,79 @@ namespace project2
             throw Error(Peek(), message);
         }
 
+        /*
+        Returns true if the current token is of a given type.
+        Unlike Match(), does not consume the token.
+        */
         private bool Check(TokenType type) {
+
+            // If at the end of the file, return false
             if (IsAtEnd()) {
                 return false;
             }
 
+            // Otherwise, check if next character matches the type of the argument
             return Peek().type == type;
         }
 
+
+        /*
+        Consume the current token and return it, similar to how scanner crawls through characters. 
+        */
         private Token Advance() {
+            // If not at the end of the EOF token, advance to next
             if (!IsAtEnd()) {
                 current ++;
             }
+            // Return the token we just advanced from
             return Previous();
         }
 
+
+        /*
+        Returns true if the next token's type if EOF
+        */
         private bool IsAtEnd() {
             return Peek().type == TokenType.EOF;
         }
 
+        /*
+        Return the next token to be consumed (the one at current)
+        */
         private Token Peek() {
             return tokens[current];
         }
 
+        /*
+        Return the last token that has been consumed (current -1)
+        */
         private Token Previous() {
             return tokens[current-1];
         }
 
+        /*
+        Call the Lox class' error handler, and return the ParseError
+        */  
         private ParseError Error(Token token, string message) {
             Lox.Error(token.line, message);
             return new ParseError();
         }
 
+        /*
+        This method discards tokens until it thinks it has found a statement boundary.
+        Most statements start with a keyword - for, if return, var, etc.
+        If the next token is any of those, we are probably about to start a statement. 
+        */
         private void Synchronize() {
             Advance();
 
+            // Read for semicolons as long as we're not at EOF
             while (!IsAtEnd()) {
                 if (Previous().type == TokenType.SEMICOLON) {
                     return;
                 }
 
+                // If next token is a keyword, we can return (ready to parse next statement)
                 switch(Peek().type) {
                     case TokenType.CLASS:
                     case TokenType.FUN:
@@ -412,6 +513,7 @@ namespace project2
                         return;
                 }
 
+                // Advance to start of next statement 
                 Advance();
             }
         }

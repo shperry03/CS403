@@ -108,6 +108,9 @@ namespace project2
             hadError = true;
         }
 
+        /*
+        Report an error at a given token. Shows the token's location and the token itself. 
+        */
         public static void Error(Token token, string message) {
             if (token.type == TokenType.EOF) {
                 Report(token.line, " at end", message);
