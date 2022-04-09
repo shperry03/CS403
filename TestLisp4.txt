@@ -1,4 +1,4 @@
-(
+(BEGIN
 (SET a 7)
 (SET b 10)
 

@@ -1,4 +1,4 @@
-(
+(BEGIN
     (SET A 10)
     (SET B 20)
     (SET C (CONS A B))
@@ -7,5 +7,5 @@
     (PRINT (NUMBER? C))
     (PRINT (SYMBOL? A))
     (SET A 10)
-    (IF (NUMBER? A) (PRINT C) (PRINT ()))
+    (IF (NUMBER? A) (PRINT C) (PRINT ())))
 )

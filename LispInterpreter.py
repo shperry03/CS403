@@ -1,6 +1,52 @@
 import math
 
 """
+***IMPORTANT: CHANGES FOR RESUBMISSION***
+1. Modified the call method for user-defined functions to evaluate each arg before evaluating.
+   This means that functions nested within functions now work properly rather than sometimes
+   printing the string literal that is passed in.
+   
+   Example:
+    (
+    (DEFINE foo (x) (+ x x))
+    (PRINT (foo 3))
+    (DEFINE bar (x) (PRINT (foo x)))
+    (bar 5)
+    (DEFINE lat (x) (bar x))
+    (lat 5)
+    )
+    
+    NOW PRINTS : 
+    6
+    10
+    10
+    
+    INSTEAD OF:
+    6
+    xx
+    xx
+
+2. Modified the PRINT method to replace python-like [ ] brackets with LISP-friendly ( ) parentheses.
+   This was done by using Python's native str.replace() function on the item that is to be printed. 
+   We replaced [ with (, ] with ), and , with '' to achieve the LISPiest string possible.
+   
+   Example:
+   (
+   (SET A 10)
+   (SET B 20)
+   (SET C (CONS A B))
+   (PRINT C)
+   )
+   
+   NOW PRINTS:
+   ((10) (20))
+   
+   INSTEAD OF:
+   [[10], [20]]
+
+3. Modified CONS implementation to remove extra [ ] (now ( )) around result.
+
+
 Sam Perry and Erik Buinevicius
 Our project is a Lisp Interpreter, based on Kamin's Lisp in Pascal, written in python.
 It will read text files in Lisp Style and execute certain commands:
@@ -15,11 +61,9 @@ It will read text files in Lisp Style and execute certain commands:
     <                   T
     >                   IF
     DEFINE              CALL
-
     CITATIONS:
     https://norvig.com/lispy.html 
     ( Used as the basis for parsing and environment ideas. The vast majority of operations were designed and written by EB and SP. )
-
 """
 
 '''
@@ -121,10 +165,9 @@ def environment() -> Env:
         '*': multExp,
         '/': divExp,
         'BEGIN': lambda *x: x[-1], # sets the last element of the list to the beginning
-        'CONS': lambda x,y: [[x], [y]], # rerturns a list pair of x and y (x . y) where x and y are both lists
         'NULL?': nullExp,
         'T': T_Output, # returns true regardless of anything
-        'PRINT': lambda x: print(x) # prints the evaluation of expression x
+        'PRINT': lambda x: print(str(x).replace('[', '(').replace(']', ')').replace(',', '')) # prints the evaluation of expression x
     })
     return env
 
@@ -210,6 +253,8 @@ def eval(exp, env = use_env) -> Exp:
         return eval(args[0])[0]
     elif op == 'CDR': # Return all but the first arguments of args
         return eval(args[0])[1:]
+    elif op == 'CONS': # Creates and returns a cons cell with expr as car and expr as cdr: ie: (exp1 . exp2)
+        return [eval(args[0]), eval(args[1])]
     elif op == 'SET': # Associate the symbol name with the value of the expression
         (symbol, exp) = args
         env[symbol] = eval(exp, env) # Add the new symbol to our environment for future access
@@ -230,16 +275,18 @@ def eval(exp, env = use_env) -> Exp:
         name = args[0] # grab name
         params = args[1] # grab params
         ops = args[2] # grab arguments
+        #print(name, ops)
         user_functions[name] = {} # Create dictionary for new function
         user_functions[name]['Params'] = params # Set parameters field
         user_functions[name]['Ops'] = ops # Set operation field
     elif op == "T":
         return T_Output
     elif op in user_functions:
+        #print('op: ', op)
         expression = user_functions[op]['Ops'] # Grab expression from existing definition dict
         for i in range(len(args)): # Iterate through each arg passed in
             cur = user_functions[op]['Params'][i] # Update the environment for each param
-            use_env[cur] = args[i]
+            use_env[cur] = eval(args[i])
         return eval(expression) # Evaluate the expression with updated variables
 
         #env[args[1]] = # set
@@ -281,9 +328,9 @@ list2 = parser(program2)
 evaluateAll(list2)
 '''
 Should print:
-[10], [20]
-[10]
-[20]
+(10 20)
+10
+(20)
 '''
 
 print("TEST CASE 3")
@@ -320,13 +367,15 @@ list6 = parser(program6)
 evaluateAll(list6)
 '''
 Should print:
-[10]
-[[20]]
+(10 20)
+10
+(20)
 t
 ()
 t
 t
-2
+t
+2.0
 '''
 
 print("TEST CASE 7")
@@ -339,7 +388,7 @@ t
 t
 ()
 ()
-[[10], [20]]
+(10 20)
 '''
 
 print("TEST CASE 8")
@@ -349,4 +398,15 @@ evaluateAll(list8)
 '''
 Should print:
 11
+'''
+
+print("TEST CASE 9")
+program9 = readFile("TestLisp9.txt")
+list9 = parser(program9)
+evaluateAll(list9)
+'''
+Should print:
+6
+10
+10
 '''

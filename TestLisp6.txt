@@ -1,15 +1,16 @@
-(
-
+(BEGIN
     (SET A 10)
     (SET B 20)
     (SET C (CONS A B))
+    (PRINT C)
     (PRINT (CAR C))
     (PRINT (CDR C))
+    PRINT (CDR (CDR C))
     (PRINT (NUMBER? A))
     (PRINT (NULL? B))
+    (PRINT (NUMBER? B))
     (PRINT T)
     (IF (T) (PRINT T) (PRINT ()))
     (SET D (/ B A))
     (PRINT D)
-
 )
