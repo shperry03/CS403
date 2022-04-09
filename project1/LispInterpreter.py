@@ -45,6 +45,16 @@ import math
    [[10], [20]]
 
 3. Modified CONS implementation to remove extra [ ] (now ( )) around result.
+   This was done by changing the cons from:
+   lambda x, y: [[x], [y]]
+   
+   to:
+   return [eval(args[0]), eval(args[1])]
+   
+   I believe this is a much cleaner implementation, and actually evaluates the args,
+   and reduces the use of redundant braces in output. 
+   
+   
 
 
 Sam Perry and Erik Buinevicius

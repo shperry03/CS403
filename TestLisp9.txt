@@ -1,8 +1,0 @@
-(BEGIN
-    (DEFINE foo (x) (+ x x))
-    (PRINT (foo 3))
-    (DEFINE bar (x) (PRINT (foo x)))
-    (bar 5)
-    (DEFINE lat (x) (bar x))
-    (lat 5)
-)
