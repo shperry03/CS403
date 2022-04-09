@@ -10,10 +10,12 @@ namespace project2 {
     */
     public class Interpreter : Expr.Visitor<object>, Stmt.Visitor<object>
     {
+        // Declare environmetn for the variables
         public static Environment globals = new Environment();
-
+        // assign Environemnt to the new created environment
         public Environment environment = globals;
 
+        // Interpreter Constructor
         public Interpreter(){
             
         }
@@ -79,6 +81,10 @@ namespace project2 {
             return null;
         }
 
+        /*
+        Visitor function for variable expressions
+        Just call get on the variable given and return it from the current environment
+        */
         public object VisitVariableExpr(Expr.Variable expr) {
             return environment.Get(expr.name);
         }
@@ -167,36 +173,57 @@ namespace project2 {
             return expr.Accept(this);
         }
 
+        /*
+        Sends a statement to the interpreter's visitor, essentially the statement equivalent of Evalutate()
+        */
         private void Execute(Stmt stmt){
             stmt.Accept(this);
         }
 
+        /*
+        Execute block statement
+        Allows code to be executed in blocks
+        */
         public void ExecuteBlock(List<Stmt> statements, Environment environment){
+            // Set the previous environment as the current one
             Environment previous = this.environment;
 
             try{
+                // Assign new environemtn to the block
                 this.environment = environment;
-
+                // Execute all the statements in the cuurrent environment
                 foreach (Stmt statement in statements){
                     Execute(statement);
                 }
             } finally {
+                //reset the old environment to be current
                 this.environment = previous;
             }
         }
 
+        // Visitor function for a Block statment
         public object VisitBlockStmt(Stmt.Block stmt){
+            // Passes in the block list of statements and creates a new environment
             ExecuteBlock(stmt.statements, new Environment(environment));
             return null;
         }
 
+        /*
+        Visit method for expression statements.
+
+        */
         public object VisitExpressionStmt(Stmt.Expression stmt){
+            // Evaluate on the expression passed in
             Evaluate(stmt.expression);
+            // return null because we just want to evaluate the statement. 
             return null;
         }
 
+        // Visitor function for a Function statement
         public object VisitFunctionStmt(Stmt.Function stmt){
+            // Construct a new loxFunction 
             LoxFunction function = new LoxFunction(stmt);
+            // Define the function with the name and LoxFunction object
             environment.Define(stmt.name.lexeme, function);
             return null;
         }
@@ -214,24 +241,41 @@ namespace project2 {
             return null;
         }
 
+        /*
+        Visit method for print statments in lox.
+        */
         public object VisitPrintStmt(Stmt.Print stmt){
+            // Creates a new value from the expression passed in
             object value = Evaluate(stmt.expression);
+            // Converts the value to string and prints it out to screen
             Console.WriteLine(Stringify(value));
+            // return null to end function
             return null;
         }
-
+        
+        /*
+        Vistor method for a return statement
+        */
         public object VisitReturnStmt(Stmt.Return stmt){
+            // create a new value to return
             object val = null;
+            // If the return value is not null, evaluate statement and get value
             if(stmt.value != null) val= Evaluate(stmt.value);
+            // return the value from the statement
             throw new Return(val);
         }
 
+        /*
+        Visitor method for variable statement
+        */
         public object VisitVarStmt(Stmt.Var stmt){
+            // Create a new value object
             object value = null;
+            // If there is a variable initialized, evaluate the statement
             if (stmt.initializer != null){
                 value = Evaluate(stmt.initializer);
             }
-
+            // Define the variable in the environment
             environment.Define(stmt.name.lexeme, value);
 
             return null;
@@ -248,8 +292,13 @@ namespace project2 {
             return null;
         }
 
+        /*
+        Visitor method for Assign Expression
+        */
         public object VisitAssignExpr(Expr.Assign expr){
+            // Set value to be the value of the Exoressuib
             object value = Evaluate(expr.value);
+            // Assign the variable value in the environment
             environment.Assign(expr.name, value);
             return value;
         }
@@ -303,36 +352,51 @@ namespace project2 {
             return null;
         }
 
+        /* 
+        Visitor method for Call Expresssion\
+
+        Allows function to be called in Lox with arguments
+        */
         public object VisitCallExpr(Expr.Call expr) {
+            // Set the Calle to the expression callee
             object callee = Evaluate(expr.callee);
 
+            // Create a new list to store the function calls arguments
             List<object> arguments = new List<object>();
 
+            // Assign the arguements
             foreach (Expr argument in expr.arguments){
                 arguments.Add(Evaluate(argument));
             }
 
+            // Check if callee is a callable type and can be called
             if(!(callee is LoxCallable)) {
                 throw new RuntimeError(expr.paren, "Can only call functions and classes.");
             }
 
+            // Create a new function and set it to Callee
             LoxCallable function = (LoxCallable) callee;
+            // Check how many arguments were given and needed
             if(arguments.Count != function.Arity()){
                 throw new RuntimeError(expr.paren, "Expected " + function.Arity() + " arguments but got " + arguments.Count + ".");
             }
+            // Return the call on the arguments 
             return function.Call(this, arguments);
         }
 
         /*
-        TODO
+        The Interpret method for Lox.
+        Allows us to accept a list of statments and execute on them.
         */
         public void Interpret(List<Stmt> statements) {
             try {
+                // For every statement execute the statement
                 foreach (Stmt statement in statements){
                     Execute(statement);
                 }
             }
             catch (RuntimeError error) {
+                // If an error occured, throw an error so we know. 
                 Lox.RuntimeError(error);
             }
         }

@@ -26,16 +26,22 @@ namespace project2
         }
 
         /*
-        
+        Expression function just calls the assignment function and return the value
         */
         private Expr Expression() {
             return Assignment();
         }
 
+        /*
+        Declaration function called to parse statements
+        */
         private Stmt Declaration(){
             try{
-                if(Match(TokenType.FUN)) return Function("function");
+                // If we have a function return Function()
+                if (Match(TokenType.FUN)) return Function("function");
+                // If we have a var, Call VarDeclaration function
                 if (Match(TokenType.VAR)) return VarDeclaration();
+                // Else just handle statement
                 return Statement();
             } catch (ParseError)
             {
@@ -43,13 +49,17 @@ namespace project2
                 return null;
             }
         }
+        /*
+        Determines whihc statement rule matches the token and returns the correct rule
+        */
         private Stmt Statement() {
+            // Go through and see which token matches for statements
             if (Match(TokenType.FOR)) return ForStatement();
-            if(Match(TokenType.IF)) return IfStatement();
-            if(Match(TokenType.PRINT)) return PrintStatement();
-            if(Match(TokenType.RETURN)) return ReturnStatement();
+            if (Match(TokenType.IF)) return IfStatement();
+            if (Match(TokenType.PRINT)) return PrintStatement();
+            if (Match(TokenType.RETURN)) return ReturnStatement();
             if (Match(TokenType.WHILE)) return WhileStatement();
-            if(Match(TokenType.LEFT_BRACE)) return new Stmt.Block(Block());
+            if (Match(TokenType.LEFT_BRACE)) return new Stmt.Block(Block());
 
             return ExpressionStatement();
         }
@@ -136,34 +146,56 @@ namespace project2
             // Create and return a new Stmt.If
             return new Stmt.If(condition, thenBranch, elseBranch);
         }
-
+        
+        /*
+        Handles Print statements in Lox.
+        Parses the expressions after a print statement until ; is hit.
+        */
         private Stmt PrintStatement(){
             Expr value = Expression();
+            // Consume until semicolon token
             Consume(TokenType.SEMICOLON, "Expect ';' after value.");
+            // returns new Stmt.Print with the value associated.
             return new Stmt.Print(value);
         }
 
+        /*
+        Handles return statements in lox
+        Parses the return in a given statement
+        */
+
         private Stmt ReturnStatement() {
+            // Set the keyword and value
             Token keyword = Previous();
             Expr val = null;
 
+            // Make the value the correct expression before the ;
             if(!Check(TokenType.SEMICOLON)){
                 val = Expression();
             }
-
+            // check for semicolon and consume it
             Consume(TokenType.SEMICOLON, "Expect ';' after return value.");
+            // return the new return statement parsed
             return new Stmt.Return(keyword,val);
         }
 
+        /*
+        Called in the Declaration Function up top.
+
+        If a variable is parsed, this handles that
+        */
         private Stmt VarDeclaration() {
+            // Consume the identifier and return the function name
             Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
 
             Expr initializer = null;
+            // If they initialize it, set the value to the correct value Expression()
             if (Match(TokenType.EQUAL)) {
                 initializer = Expression();
             }
-
+            // Else declares variable and checks for syntax
             Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+            // Returns a variable with the name and Value
             return new Stmt.Var(name, initializer);
         }
 
@@ -184,17 +216,30 @@ namespace project2
             return new Stmt.While(condition, body);
         }
 
+        /*
+        Handles expression statements in Lox.
+        */
         private Stmt ExpressionStatement(){
             Expr expr = Expression();
+            // Consume until semicolon token is found.
             Consume(TokenType.SEMICOLON, "Expect ';' after expression.");
+            // returns a new Stmt.Expresssion with expr value.
             return new Stmt.Expression(expr);
         }
 
+        /*
+        Handles parsing function statements in lox
+        Goes through the statement and breaks it down into expressions. 
+        */
+
         private Stmt.Function Function(string kind){
+            // Make sure the function is declared correctly
             Token name = Consume(TokenType.IDENTIFIER, "Expect " + kind + " name.");
             Token p = Consume(TokenType.LEFT_PAREN, "Expect '(' before parameter list");
+            // create a new list to store parameters
             List<Token> parameters = new List<Token>();
 
+            // Add the parameters into the list
             if(!Check(TokenType.RIGHT_PAREN)) {
                 do{
                     if (parameters.Count >= 255){
@@ -205,38 +250,51 @@ namespace project2
                 }while (Match(TokenType.COMMA));
 
             }
+            // Finish parsing braces and parentheses
             Consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters.");
             Consume(TokenType.LEFT_BRACE, "Expect '{' before "+kind+ " body.");
+            // Create a new block for the body of the function
             List<Stmt> body = Block();
+            // return the function declaration
             return new Stmt.Function(name,parameters,body);
         }
 
+        /*
+        BLock fucntion
+        ALlows us to run code in blocks of { }
+        */
         private List<Stmt> Block(){
+            // Create a new list of statements
             List<Stmt> statements = new List<Stmt>();
 
             while(!Check(TokenType.RIGHT_BRACE) && !IsAtEnd()){
+                // Add the statements until a right brace or end of file
                 statements.Add(Declaration());
             }
-
+            // no right brace found checker and parser
             Consume(TokenType.RIGHT_BRACE, "Expect '}' after block.");
+            // return the block of statements in List format for execution
             return statements;
         }
 
         /*
-        Returns a new Expr 
+        Recursively parses the right hadn sife of an assignment expression
         */
         private Expr Assignment(){
             Expr expr = Or();
 
             if (Match(TokenType.EQUAL)){
+                // Make sure the assignment is valid
                 Token equals = Previous();
                 Expr value = Assignment();
 
                 if (expr is Expr.Variable){
+                    // creates the name given to it
                     Token name = ((Expr.Variable)expr).name;
+                    // returns the expr assignment
                     return new Expr.Assign(name, value);
                 }
-
+                //if gets here, then it wasn't a variable
                 Error(equals, "Invalid assignment target.");
             }
 
@@ -278,10 +336,11 @@ namespace project2
         }
 
         /*
-        Later chapter
+        Yhid parses a series of statements until it hits end of input
         */
         public List<Stmt> Parse() {
             var statements = new List<Stmt>();
+            // While there is still input, parse statement
             while(!IsAtEnd()){
                 statements.Add(Declaration());
             }
@@ -377,33 +436,45 @@ namespace project2
             return Call();
         }
 
+        /*
+        Finish call that actually parses the rest of the call
+        */
         private Expr FinishCall(Expr callee){
+            // Create the arg list
             List<Expr> arguments = new List<Expr>();
             if(!Check(TokenType.RIGHT_PAREN)){
                 do {
+                    // Check for too many args
                     if (arguments.Count >= 255){
                         Error(Peek(), "Can't have more than 255 arguments.");
                     }
+                    // add every argument to new list
                     arguments.Add(Expression());
                 } while (Match(TokenType.COMMA));
             }
-
+            //when hit the final parenthesize check to make sure its there
             Token paren = Consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments.");
 
+            //Returnt The call fucntion on the expr and args
             return new Expr.Call(callee, paren, arguments);
         }
 
+        /*
+        Call funciton for the parser
+        */
         private Expr Call(){
+            // parse the primary expr
             Expr expr = Primary();
 
             while(true){
+                // When hits the left paren, call the FInishCall on the rest of the expr
                 if(Match(TokenType.LEFT_PAREN)){
                     expr = FinishCall(expr);
                 } else{
                     break;
                 }
             }
-
+            // return the expression
             return expr;
         }
 
