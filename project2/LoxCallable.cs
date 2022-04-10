@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace project2
 {
     /*
-    Class for callible functions in lox
+    Class for callable functions in lox
     allows us to split callable and non-callable objes
     */
     public interface LoxCallable

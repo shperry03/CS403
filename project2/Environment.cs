@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace project2
 {
     /*
-    Environemtn class for storing and assigning variables in the interpreter's Environment.
+    Environment class for storing and assigning variables in the interpreter's Environment.
     */
     public class Environment {
 

@@ -2,6 +2,10 @@ using System.Collections.Generic;
 
 namespace project2
 {
+    /*
+    The Stmt class represents an entire statement in Lox, and provides the interface with functions necessary
+    to visit and execute a statement. 
+    */
     public abstract class Stmt
     {
         public interface Visitor<T>
