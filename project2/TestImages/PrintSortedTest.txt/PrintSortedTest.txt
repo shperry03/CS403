@@ -1,0 +1,60 @@
+fun print_sorted(a, b, c){
+
+    // CHECK IF A IS SMALLEST
+    if ((a < b) and (a < c)){
+        // CHECK B AND c
+        if (b < c){
+            print a;
+            print b;
+            print c;
+        }
+        if (c < b){
+            print a;
+            print c;
+            print b;
+        }
+    }
+    else{
+        // CHECK IF B IS SMALLEST
+        if((b < c) and (b < a)){
+            // CHECK A AND C
+            if(a < c){
+                print b;
+                print a;
+                print c;
+            }
+            if(c < a){
+                print b;
+                print c;
+                print a;
+            }
+        }
+        else{
+            // C IS SMALLEST SO CHECK A AND B
+            if(b < a){
+                print c;
+                print b;
+                print a;
+            }
+            else{
+                print c;
+                print a;
+                print b;
+            }
+        }
+    }
+}
+
+print "ALL CASES SHOULD PRINT 1 2 3 IN 3 LINES";
+print "CASE 1: 1, 2, 3";
+print_sorted(1,2, 3);
+print "CASE 2: 1, 3, 2";
+print_sorted(1,3, 2);
+print "CASE 3: 2, 1, 3";
+print_sorted(2,1, 3);
+print "CASE 4: 2, 3, 1";
+print_sorted(2,3, 1);
+print "CASE 5: 3, 2, 1";
+print_sorted(3,2, 1);
+print "CASE 6: 3, 1, 2";
+print_sorted(3,1, 2);

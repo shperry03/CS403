@@ -1,0 +1,16 @@
+fun avg_of_four(a, b, c, d){
+    return (a + b + c + d) /4;
+}
+
+var a = 10;
+var b = 5;
+var c = 5;
+var d = 10;
+
+print "Average of: "; 
+print a;
+print b; 
+print c;   
+print d; 
+print "Equals: ";
+print avg_of_four(a ,b ,c ,d);

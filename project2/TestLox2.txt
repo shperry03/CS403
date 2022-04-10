@@ -1,4 +1,6 @@
+// Function add adds 3 numbers together and prints the sum
 
+// Should print: 30
 
 fun add(a,b,c) {
   print a + b + c;
