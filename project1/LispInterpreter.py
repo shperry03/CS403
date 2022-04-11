@@ -4,7 +4,7 @@ import math
 ***IMPORTANT: CHANGES FOR RESUBMISSION***
 1. Modified the call method for user-defined functions to evaluate each arg before evaluating.
    This means that functions nested within functions now work properly rather than sometimes
-   printing the string literal that is passed in.
+   printing the string literal that is passed in. (Fixes the last piece of feedback)
    
    Example:
     (
@@ -28,7 +28,8 @@ import math
 
 2. Modified the PRINT method to replace python-like [ ] brackets with LISP-friendly ( ) parentheses.
    This was done by using Python's native str.replace() function on the item that is to be printed. 
-   We replaced [ with (, ] with ), and , with '' to achieve the LISPiest string possible.
+   We replaced [ with (, ] with ), and , with '' to achieve the LISPiest string possible. 
+   (Fixes the second to last piece of feedback)
    
    Example:
    (
@@ -53,9 +54,11 @@ import math
    
    I believe this is a much cleaner implementation, and actually evaluates the args,
    and reduces the use of redundant braces in output. 
-   
-   
 
+4. Added BEGIN to each test result. This fixes the first piece of feedback and results
+   in a "lispier" solution to the problem of the entire file being enclosed in ( ). 
+   
+***END CHANGES***
 
 Sam Perry and Erik Buinevicius
 Our project is a Lisp Interpreter, based on Kamin's Lisp in Pascal, written in python.
