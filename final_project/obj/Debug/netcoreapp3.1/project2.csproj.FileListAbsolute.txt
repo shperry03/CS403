@@ -24,3 +24,16 @@ C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\project2\ob
 C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\project2\obj\Debug\netcoreapp3.1\project2.dll
 C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\project2\obj\Debug\netcoreapp3.1\project2.pdb
 C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\project2\obj\Debug\netcoreapp3.1\project2.genruntimeconfig.cache
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\bin\Debug\netcoreapp3.1\project2.exe
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\bin\Debug\netcoreapp3.1\project2.deps.json
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\bin\Debug\netcoreapp3.1\project2.runtimeconfig.json
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\bin\Debug\netcoreapp3.1\project2.runtimeconfig.dev.json
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\bin\Debug\netcoreapp3.1\project2.dll
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\bin\Debug\netcoreapp3.1\project2.pdb
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\obj\Debug\netcoreapp3.1\project2.csprojAssemblyReference.cache
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\obj\Debug\netcoreapp3.1\project2.csproj.CoreCompileInputs.cache
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\obj\Debug\netcoreapp3.1\project2.AssemblyInfoInputs.cache
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\obj\Debug\netcoreapp3.1\project2.AssemblyInfo.cs
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\obj\Debug\netcoreapp3.1\project2.dll
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\obj\Debug\netcoreapp3.1\project2.pdb
+C:\Users\sperr\OneDrive\Desktop\Classes\CS Courses\CS403\CS403\CS403\final_project\obj\Debug\netcoreapp3.1\project2.genruntimeconfig.cache

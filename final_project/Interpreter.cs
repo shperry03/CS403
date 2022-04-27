@@ -285,9 +285,24 @@ namespace project2 {
         Use C#'s while to check for the condition's truthiness, then executes the body until it becomes falsey
         */
         public object VisitWhileStmt(Stmt.While stmt) {
+            int i = 0;
+            Console.WriteLine("----------BEGIN FOR LOOP----------");
             while (IsTruthy(Evaluate(stmt.condition))) {
+                Console.WriteLine();
+                Console.WriteLine("Iteration: " + (i+1));
+                Console.WriteLine("Index Value: " + i);
+                Console.WriteLine("Condition Value: " + Evaluate(stmt.condition));
+                Console.WriteLine();
+                Console.WriteLine("For Loop Body Output: ");
                 Execute(stmt.body);
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------");
+                i++;
             }
+            Console.WriteLine();
+            Console.WriteLine("Condition Value: " + Evaluate(stmt.condition));
+            Console.WriteLine();
+            Console.WriteLine("----------END FOR LOOP----------");
 
             return null;
         }
