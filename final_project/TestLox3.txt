@@ -1,0 +1,14 @@
+var a = 5;
+var b = 10;
+var c = 0;
+var d = "test";
+
+// Simple code to test various comparison operators 
+
+print a < b; // True
+print b < c; // False
+print c == a; // False
+print c == 0; // True
+print b >= 10; // True
+print c != a; // True
+print d <= b; // Prints error

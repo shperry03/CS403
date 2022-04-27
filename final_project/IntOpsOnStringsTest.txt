@@ -1,0 +1,13 @@
+// TESTING math operations on strings 
+// should produce a runtime error at line 13
+var a = "HelloWorld!";
+var b = 10;
+var c = 7;
+
+// check some math
+print b * c; // 70
+print b + c; // 17
+print b - c; // 3
+
+//ERROR HERE DUE TO OPERATING ON STRING
+print c * a;

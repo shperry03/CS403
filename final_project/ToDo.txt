@@ -1,0 +1,17 @@
+Files to write/look at:\
+
+  Lox.java
+  Scanner.java
+  Parser.java
+  Token.java
+  TokenType.java
+  Interpreter.java
+  Expr.java  -- Through tool/GenerateAst.Java -- 
+  AstPrinter.java
+  Environment.java
+  LoxCallable.java
+  LoxFunction.java
+  Return.java
+  
+  
+  DONT DO CLOSURES OR CLASSES
