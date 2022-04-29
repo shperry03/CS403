@@ -239,13 +239,12 @@ namespace project2 {
             // Add Learn output
             Console.WriteLine("----------BEGIN IF----------");
             Console.Write("-- Evaluating condition " + stmt.condition.ToString());
+            Console.WriteLine();
             if (IsTruthy(Evaluate(stmt.condition))) {
-                Console.WriteLine(": True");
                 Console.WriteLine();
                 Console.WriteLine("-- If Statement Body Output:");
                 Execute(stmt.thenBranch);
             } else if (stmt.elseBranch != null) {
-                Console.WriteLine(": False");
                 Console.WriteLine();
                 Console.WriteLine("-- If Statement Else Body Output:");
                 Execute(stmt.elseBranch);
@@ -303,22 +302,31 @@ namespace project2 {
             int i = 0;
             int output = stmt.flag;
             if (output == 1) {
-                Console.WriteLine("----------BEGIN LOOP----------");
                 while (IsTruthy(Evaluate(stmt.condition))) {
-                    Console.WriteLine("-- Iteration: " + (i+1));
-                    Console.WriteLine("-- Index Value: " + i);
-                    Console.WriteLine("-- Condition Value " + stmt.condition.ToString() + ": " + Evaluate(stmt.condition)); // how can we print the statement we're checking?
-                    Console.WriteLine();
-                    Console.WriteLine("-- For Loop Body Output: ");
-                    Execute(stmt.body);
-                    Console.WriteLine();
-                    Console.WriteLine("-----------------------------");
-                    i++;
+                    if (stmt.body.ToString() == "project2.Stmt+While") {
+                        Console.WriteLine("----------BEGIN LOOP----------");
+                        Execute(stmt.body);
+                    } else {
+                        Console.WriteLine("-- Iteration: " + (i+1));
+                        Console.WriteLine("-- Index Value: " + i);
+                        Console.WriteLine();
+                        Console.WriteLine("-- For Loop Body Output: ");
+                        i++;
+                        Execute(stmt.body);
+                        Console.WriteLine();
+                        Console.WriteLine("-----------------------------");
+                    }
+
                 }
-                Console.WriteLine();
-                Console.WriteLine("Condition Value " + stmt.condition.ToString() + ": " + Evaluate(stmt.condition));
-                Console.WriteLine();
-                Console.WriteLine("----------END FOR LOOP----------");
+                if (stmt.body.ToString() != "project2.Stmt+While") {
+                    Console.WriteLine();
+                    Console.WriteLine("Condition Value " + stmt.condition.ToString() + ": " + Evaluate(stmt.condition));
+                    Console.WriteLine();
+                }
+                if (stmt.body.ToString() == "project2.Stmt+While") {
+                    Console.WriteLine("----------END FOR LOOP----------");
+                }
+                
             } else {
                 while (IsTruthy(Evaluate(stmt.condition))) {
                     Execute(stmt.body);
@@ -351,15 +359,19 @@ namespace project2 {
             switch (expr.op.type) {
                 case TokenType.GREATER: // Check that both vals are numbers, and return true if left is > right
                     CheckNumberOperands(expr.op, left, right);
+                    Console.WriteLine("-- Checking if " + left.ToString() + " " + expr.op.lexeme + " " + right.ToString() + ": " + ((double)left > (double)right));
                     return (double)left > (double)right;
                 case TokenType.GREATER_EQUAL: // Check that both vals are numbers, and return true if left is >= right
                     CheckNumberOperands(expr.op, left, right);
+                    Console.WriteLine("-- Checking if " + left.ToString() + " " + expr.op.lexeme + " " + right.ToString() + ": " + ((double)left >= (double)right)); // learn output
                     return (double)left >= (double)right;
                 case TokenType.LESS: // Check that both vals are numbers, andr eturn true if left < right
                     CheckNumberOperands(expr.op, left, right);
+                    Console.WriteLine("-- Checking if " + left.ToString() + " " + expr.op.lexeme + " " + right.ToString() + ": " + ((double)left < (double)right));
                     return (double)left < (double)right;
                 case TokenType.LESS_EQUAL: // Check that both vals are numbers, and return true if left <= right
                     CheckNumberOperands(expr.op, left, right);
+                    Console.WriteLine("-- Checking if " + left.ToString() + " " + expr.op.lexeme + " " + right.ToString() + ": " + ((double)left <= (double) right)); // Learn
                     return (double)left <= (double)right;
                 case TokenType.MINUS: // Check that both vals are numbers, and return left - right
                     CheckNumberOperands(expr.op, left, right);
@@ -380,8 +392,10 @@ namespace project2 {
                     CheckNumberOperands(expr.op, left, right);
                     return (double)left * (double)right;
                 case TokenType.BANG_EQUAL: // Return true if left operand != right operand
+                    Console.WriteLine("-- Checking if " + left.ToString() + " " + expr.op.lexeme + " " + right.ToString() + ": " + !IsEqual(left, right));
                     return !IsEqual(left, right);
                 case TokenType.EQUAL_EQUAL: // Return true if left operand == right operand
+                    Console.WriteLine("-- Checking if " + left.ToString() + " " + expr.op.lexeme + " " + right.ToString() + ": " + IsEqual(left, right));
                     return IsEqual(left, right);
             }
 

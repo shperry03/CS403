@@ -1,6 +1,6 @@
 // Function add adds 3 numbers together and prints the sum
 
-// Should print: 30
+// Should print: 40
 
 fun add(a,b,c) {
   print a + b + c;
@@ -9,4 +9,6 @@ fun add(a,b,c) {
 var a = 10;
 var b = 10;
 var c  = 10;
+
+c = 20;
 add(a, b, c);
