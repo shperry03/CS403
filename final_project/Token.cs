@@ -33,7 +33,7 @@ namespace project2 {
         Returns the string version of the token
         */
         public override string ToString() {
-            return type + " " + lexeme + " " + literal;
+            return lexeme + " " + literal;
         }
 
     }
