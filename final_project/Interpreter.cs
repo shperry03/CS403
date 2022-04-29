@@ -203,7 +203,6 @@ namespace project2 {
 
         // Visitor function for a Block statment
         public object VisitBlockStmt(Stmt.Block stmt){
-            System.Console.WriteLine("--------ENTERING BLOCK STATEMENT--------");
             // Passes in the block list of statements and creates a new environment
             ExecuteBlock(stmt.statements, new Environment(environment));
 
