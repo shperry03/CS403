@@ -37,6 +37,10 @@ namespace project2
 
             public Token name;
             public Expr value;
+            public override string ToString()
+            {
+                return "-- Assigning " + name.lexeme + " with value " + value;
+            }
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.VisitAssignExpr(this);
@@ -68,7 +72,7 @@ namespace project2
 
             public override string ToString()
             {
-                return " (" + left + " " + op.lexeme + " " + right + ") ";
+                return "(" + left + " " + op.lexeme + " " + right + ")";
             }
             public override T Accept<T>(Visitor<T> visitor)
             {
@@ -93,6 +97,10 @@ namespace project2
             public Expr callee;
             public Token paren;
             public List<Expr> arguments;
+            public override string ToString()
+            {
+                return "-- Calling function " + callee.ToString() + " with arguments " + string.Join(' ', arguments);
+            }
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.VisitCallExpr(this);
@@ -178,6 +186,10 @@ namespace project2
           public Expr left;
           public  Token oper;
           public  Expr right;
+            public override string ToString()
+            {
+                return left.ToString() + " " + oper.ToString() + " " + right.ToString();
+            }
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.VisitLogicalExpr(this);

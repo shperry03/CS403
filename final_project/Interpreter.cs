@@ -213,6 +213,7 @@ namespace project2 {
 
         */
         public object VisitExpressionStmt(Stmt.Expression stmt){
+            Console.WriteLine(stmt.expression.ToString());
             // Evaluate on the expression passed in
             Evaluate(stmt.expression);
             // return null because we just want to evaluate the statement. 
@@ -232,18 +233,18 @@ namespace project2 {
         Evaluates the condition, executing the thenBranch if true, otherwise execute elseBranch
         */
         public object VisitIfStmt(Stmt.If stmt) { // override?
-
+            // Add Learn output
             Console.WriteLine("----------BEGIN IF----------");
-            Console.Write("Evaluating condition" + stmt.condition.ToString());
+            Console.Write("-- Evaluating condition" + stmt.condition.ToString());
             if (IsTruthy(Evaluate(stmt.condition))) {
                 Console.WriteLine(": True");
                 Console.WriteLine();
-                Console.WriteLine("If Statement Body Output:");
+                Console.WriteLine("-- If Statement Body Output:");
                 Execute(stmt.thenBranch);
             } else if (stmt.elseBranch != null) {
                 Console.WriteLine(": False");
                 Console.WriteLine();
-                Console.WriteLine("If Statement Else Body Output:");
+                Console.WriteLine("-- If Statement Else Body Output:");
                 Execute(stmt.elseBranch);
             }
             Console.WriteLine("----------END IF----------");
@@ -270,6 +271,8 @@ namespace project2 {
             object val = null;
             // If the return value is not null, evaluate statement and get value
             if(stmt.value != null) val= Evaluate(stmt.value);
+            // LEARN OUTPUT
+            Console.WriteLine("-- Returning " + stmt.value.ToString());
             // return the value from the statement
             throw new Return(val);
         }
@@ -298,11 +301,11 @@ namespace project2 {
             Console.WriteLine("----------BEGIN LOOP----------");
             while (IsTruthy(Evaluate(stmt.condition))) {
                 Console.WriteLine();
-                Console.WriteLine("Iteration: " + (i+1));
-                Console.WriteLine("Index Value: " + i);
-                Console.WriteLine("Condition Value" + stmt.condition.ToString() + ": " + Evaluate(stmt.condition)); // how can we print the statement we're checking?
+                Console.WriteLine("-- Iteration: " + (i+1));
+                Console.WriteLine("-- Index Value: " + i);
+                Console.WriteLine("-- Condition Value" + stmt.condition.ToString() + ": " + Evaluate(stmt.condition)); // how can we print the statement we're checking?
                 Console.WriteLine();
-                Console.WriteLine("For Loop Body Output: ");
+                Console.WriteLine("-- For Loop Body Output: ");
                 Execute(stmt.body);
                 Console.WriteLine();
                 Console.WriteLine("-----------------------------");

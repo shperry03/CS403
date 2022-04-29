@@ -45,6 +45,11 @@ namespace project2
             }
             // stores the expression object value
             public Expr expression;
+
+            // Print Override method for Learn
+            public override string ToString() {
+                return expression.ToString();
+            }
             // Accept function for visitor
             public override T Accept<T>(Visitor<T> visitor)
             {
@@ -72,6 +77,10 @@ namespace project2
             // List of statements that give functionality
             public List<Stmt> body;
             // Accept statement for the visitor
+            public override string ToString()
+            {
+                return base.ToString();
+            }
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.VisitFunctionStmt(this);
