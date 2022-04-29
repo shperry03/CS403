@@ -232,12 +232,21 @@ namespace project2 {
         Evaluates the condition, executing the thenBranch if true, otherwise execute elseBranch
         */
         public object VisitIfStmt(Stmt.If stmt) { // override?
+
+            Console.WriteLine("----------BEGIN IF----------");
+            Console.Write("Evaluating condition" + stmt.condition.ToString());
             if (IsTruthy(Evaluate(stmt.condition))) {
+                Console.WriteLine(": True");
+                Console.WriteLine();
+                Console.WriteLine("If Statement Body Output:");
                 Execute(stmt.thenBranch);
             } else if (stmt.elseBranch != null) {
+                Console.WriteLine(": False");
+                Console.WriteLine();
+                Console.WriteLine("If Statement Else Body Output:");
                 Execute(stmt.elseBranch);
             }
-
+            Console.WriteLine("----------END IF----------");
             return null;
         }
 
@@ -286,12 +295,12 @@ namespace project2 {
         */
         public object VisitWhileStmt(Stmt.While stmt) {
             int i = 0;
-            Console.WriteLine("----------BEGIN FOR LOOP----------");
+            Console.WriteLine("----------BEGIN LOOP----------");
             while (IsTruthy(Evaluate(stmt.condition))) {
                 Console.WriteLine();
                 Console.WriteLine("Iteration: " + (i+1));
                 Console.WriteLine("Index Value: " + i);
-                Console.WriteLine("Condition Value: " + Evaluate(stmt.condition));
+                Console.WriteLine("Condition Value" + stmt.condition.ToString() + ": " + Evaluate(stmt.condition)); // how can we print the statement we're checking?
                 Console.WriteLine();
                 Console.WriteLine("For Loop Body Output: ");
                 Execute(stmt.body);
@@ -300,7 +309,7 @@ namespace project2 {
                 i++;
             }
             Console.WriteLine();
-            Console.WriteLine("Condition Value: " + Evaluate(stmt.condition));
+            Console.WriteLine("Condition Value" + stmt.condition.ToString() + ": " + Evaluate(stmt.condition));
             Console.WriteLine();
             Console.WriteLine("----------END FOR LOOP----------");
 

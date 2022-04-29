@@ -65,6 +65,11 @@ namespace project2
             public Expr left;
             public Token op;
             public Expr right;
+
+            public override string ToString()
+            {
+                return " (" + left + " " + op.lexeme + " " + right + ") ";
+            }
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.VisitBinaryExpr(this);
@@ -124,6 +129,10 @@ namespace project2
             }
 
             public object value;
+            public override string ToString()
+            {
+                return value.ToString();
+            }
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.VisitLiteralExpr(this);
@@ -190,6 +199,11 @@ namespace project2
             }
 
             public Token name;
+
+            public override string ToString()
+            {
+                return name.lexeme;
+            }
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.VisitVariableExpr(this);
