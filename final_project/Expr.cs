@@ -118,6 +118,11 @@ namespace project2
             }
 
             public Expr expression;
+
+            public override string ToString()
+            {
+                return expression.ToString();
+            }
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.VisitGroupingExpr(this);
@@ -163,6 +168,10 @@ namespace project2
 
             public Token op;
             public Expr right;
+            public override string ToString()
+            {
+                return base.ToString();
+            }
             public override T Accept<T>(Visitor<T> visitor)
             {
                 return visitor.VisitUnaryExpr(this);

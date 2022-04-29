@@ -203,15 +203,17 @@ namespace project2 {
 
         // Visitor function for a Block statment
         public object VisitBlockStmt(Stmt.Block stmt){
+            System.Console.WriteLine("--------ENTERING BLOCK STATEMENT--------");
             // Passes in the block list of statements and creates a new environment
             ExecuteBlock(stmt.statements, new Environment(environment));
+
             return null;
         }
 
         /*
         Visit method for expression statements.
 
-        */
+        */ 
         public object VisitExpressionStmt(Stmt.Expression stmt){
             Console.WriteLine(stmt.expression.ToString());
             // Evaluate on the expression passed in
@@ -225,6 +227,7 @@ namespace project2 {
             // Construct a new loxFunction 
             LoxFunction function = new LoxFunction(stmt);
             // Define the function with the name and LoxFunction object
+            System.Console.WriteLine("-- Defining Function " + stmt.ToString());
             environment.Define(stmt.name.lexeme, function);
             return null;
         }
@@ -235,7 +238,7 @@ namespace project2 {
         public object VisitIfStmt(Stmt.If stmt) { // override?
             // Add Learn output
             Console.WriteLine("----------BEGIN IF----------");
-            Console.Write("-- Evaluating condition" + stmt.condition.ToString());
+            Console.Write("-- Evaluating condition " + stmt.condition.ToString());
             if (IsTruthy(Evaluate(stmt.condition))) {
                 Console.WriteLine(": True");
                 Console.WriteLine();
@@ -303,7 +306,7 @@ namespace project2 {
                 Console.WriteLine();
                 Console.WriteLine("-- Iteration: " + (i+1));
                 Console.WriteLine("-- Index Value: " + i);
-                Console.WriteLine("-- Condition Value" + stmt.condition.ToString() + ": " + Evaluate(stmt.condition)); // how can we print the statement we're checking?
+                Console.WriteLine("-- Condition Value " + stmt.condition.ToString() + ": " + Evaluate(stmt.condition)); // how can we print the statement we're checking?
                 Console.WriteLine();
                 Console.WriteLine("-- For Loop Body Output: ");
                 Execute(stmt.body);
@@ -312,7 +315,7 @@ namespace project2 {
                 i++;
             }
             Console.WriteLine();
-            Console.WriteLine("Condition Value" + stmt.condition.ToString() + ": " + Evaluate(stmt.condition));
+            Console.WriteLine("Condition Value " + stmt.condition.ToString() + ": " + Evaluate(stmt.condition));
             Console.WriteLine();
             Console.WriteLine("----------END FOR LOOP----------");
 

@@ -79,7 +79,7 @@ namespace project2
             // Accept statement for the visitor
             public override string ToString()
             {
-                return base.ToString();
+                return name.lexeme.ToString() + " with parameter(s) [" + string.Join(' ', param) + "]";
             }
             public override T Accept<T>(Visitor<T> visitor)
             {
