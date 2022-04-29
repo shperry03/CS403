@@ -87,6 +87,7 @@ namespace project2 {
         */
         public object VisitVariableExpr(Expr.Variable expr) {
             return environment.Get(expr.name);
+            
         }
 
         /*
@@ -300,23 +301,30 @@ namespace project2 {
         */
         public object VisitWhileStmt(Stmt.While stmt) {
             int i = 0;
-            Console.WriteLine("----------BEGIN LOOP----------");
-            while (IsTruthy(Evaluate(stmt.condition))) {
+            int output = stmt.flag;
+            if (output == 1) {
+                Console.WriteLine("----------BEGIN LOOP----------");
+                while (IsTruthy(Evaluate(stmt.condition))) {
+                    Console.WriteLine("-- Iteration: " + (i+1));
+                    Console.WriteLine("-- Index Value: " + i);
+                    Console.WriteLine("-- Condition Value " + stmt.condition.ToString() + ": " + Evaluate(stmt.condition)); // how can we print the statement we're checking?
+                    Console.WriteLine();
+                    Console.WriteLine("-- For Loop Body Output: ");
+                    Execute(stmt.body);
+                    Console.WriteLine();
+                    Console.WriteLine("-----------------------------");
+                    i++;
+                }
                 Console.WriteLine();
-                Console.WriteLine("-- Iteration: " + (i+1));
-                Console.WriteLine("-- Index Value: " + i);
-                Console.WriteLine("-- Condition Value " + stmt.condition.ToString() + ": " + Evaluate(stmt.condition)); // how can we print the statement we're checking?
+                Console.WriteLine("Condition Value " + stmt.condition.ToString() + ": " + Evaluate(stmt.condition));
                 Console.WriteLine();
-                Console.WriteLine("-- For Loop Body Output: ");
-                Execute(stmt.body);
-                Console.WriteLine();
-                Console.WriteLine("-----------------------------");
-                i++;
+                Console.WriteLine("----------END FOR LOOP----------");
+            } else {
+                while (IsTruthy(Evaluate(stmt.condition))) {
+                    Execute(stmt.body);
+                }
             }
-            Console.WriteLine();
-            Console.WriteLine("Condition Value " + stmt.condition.ToString() + ": " + Evaluate(stmt.condition));
-            Console.WriteLine();
-            Console.WriteLine("----------END FOR LOOP----------");
+            
 
             return null;
         }

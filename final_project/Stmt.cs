@@ -186,12 +186,15 @@ namespace project2
         public class While: Stmt
         {   
             //Constructor
-            public While(Expr condition, Stmt body) {
+            public While(Expr condition, Stmt body, int flag) {
                 this.condition = condition;
                 this.body = body;
+                this.flag = flag;
             }
             // Condition on which to loop
             public Expr condition;
+            // Flag for output
+            public int flag;
             // Functionality of the while statement
             public Stmt body;
             // Accept statement for the visitor

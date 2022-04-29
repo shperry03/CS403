@@ -44,7 +44,9 @@ namespace project2
             {"this", TokenType.THIS},
             {"true", TokenType.TRUE},
             {"var", TokenType.VAR},
-            {"while", TokenType.WHILE}
+            {"while", TokenType.WHILE},
+            {"whilenoout", TokenType.WHILENOOUT},
+            {"fornoout", TokenType.FORNOOUT}
         };
         
 

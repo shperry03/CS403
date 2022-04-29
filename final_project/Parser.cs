@@ -54,11 +54,13 @@ namespace project2
         */
         private Stmt Statement() {
             // Go through and see which token matches for statements
-            if (Match(TokenType.FOR)) return ForStatement();
+            if (Match(TokenType.FOR)) return ForStatement(1);
+            if (Match(TokenType.FORNOOUT)) return ForStatement(0);
             if (Match(TokenType.IF)) return IfStatement();
             if (Match(TokenType.PRINT)) return PrintStatement();
             if (Match(TokenType.RETURN)) return ReturnStatement();
-            if (Match(TokenType.WHILE)) return WhileStatement();
+            if (Match(TokenType.WHILE)) return WhileStatement(1);
+            if (Match(TokenType.WHILENOOUT)) return WhileStatement(0);
             if (Match(TokenType.LEFT_BRACE)) return new Stmt.Block(Block());
 
             return ExpressionStatement();
@@ -67,7 +69,7 @@ namespace project2
         /*
         Performs 'desugaring' on the for statement, essentially turning it into a Lox while statement
         */
-        private Stmt ForStatement() {
+        private Stmt ForStatement(int output) {
             // If no ( after for, throw error
             Consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.");
 
@@ -111,7 +113,8 @@ namespace project2
                 condition = new Expr.Literal(true);
             }
             // Replace body with a while statement, passing in the condition and body
-            body = new Stmt.While(condition, body);
+            body = new Stmt.While(condition, body, output);
+            body = new Stmt.While(condition, body, output);
 
             // If there is an initializer, it must run once before the entire loop.
             if (initializer != null) {
@@ -120,6 +123,7 @@ namespace project2
                     new List<Stmt> {initializer, body}
                 );
             }
+
             return body;
         }
 
@@ -195,6 +199,9 @@ namespace project2
             }
             // Else declares variable and checks for syntax
             Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+
+            // Print learn output
+            System.Console.WriteLine("-- Creating variable " + name + "with value " + initializer);
             // Returns a variable with the name and Value
             return new Stmt.Var(name, initializer);
         }
@@ -202,7 +209,7 @@ namespace project2
         /*
         Creates a Lox While statement from the condition inside parentheses and the body
         */
-        private Stmt WhileStatement() {
+        private Stmt WhileStatement(int flag) {
             // If no ( after while, throws error
             Consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
             // Grab the condition to check for inside ( )
@@ -213,7 +220,7 @@ namespace project2
             Stmt body = Statement();
 
             // Return Lox while statement
-            return new Stmt.While(condition, body);
+            return new Stmt.While(condition, body, flag);
         }
 
         /*
@@ -293,6 +300,7 @@ namespace project2
                     Token name = ((Expr.Variable)expr).name;
                     // returns the expr assignment
                     return new Expr.Assign(name, value);
+                    
                 }
                 //if gets here, then it wasn't a variable
                 Error(equals, "Invalid assignment target.");
