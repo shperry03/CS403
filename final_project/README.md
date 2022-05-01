@@ -9,7 +9,7 @@ This means that dotnet version 3.1 or greater must be installed on the machine t
 
 CREATING TEST FILES:
     To generate test files, the user must simply create a new .txt file in the same directory as
-    the C# files (Project2/), with correct Learn syntax.
+    the C# files (final_project/), with correct Learn syntax.
 
 RUNNING TEST FILES:
     The following command is used to execute a Learn file in the terminal:
@@ -31,3 +31,6 @@ COMPILATION / RUN INSTRUCTIONS
 1. Ensure that an up-to-date dotnet version is installed on your machine (verify using dotnet --list-sdks).
 2. Execute the command "dotnet run 'filename'" to run a pre-written Learn file, or "dotnet run" to open the line-by-line Learn prompt.
 3. That's it! Your Learn interpreter should be good to go. 
+
+ADDITIONAL INFORMATION
+    Additional information about the Learn language, its use cases, and its functionality can be found in the supplemental PowerPoint/Document
