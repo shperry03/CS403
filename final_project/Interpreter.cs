@@ -302,30 +302,23 @@ namespace project2 {
             int i = 0;
             int output = stmt.flag;
             if (output == 1) {
+                Console.WriteLine("----------BEGIN LOOP----------");
                 while (IsTruthy(Evaluate(stmt.condition))) {
-                    if (stmt.body.ToString() == "project2.Stmt+While") {
-                        Console.WriteLine("----------BEGIN LOOP----------");
-                        Execute(stmt.body);
-                    } else {
-                        Console.WriteLine("-- Iteration: " + (i+1));
-                        Console.WriteLine("-- Index Value: " + i);
-                        Console.WriteLine();
-                        Console.WriteLine("-- For Loop Body Output: ");
-                        i++;
-                        Execute(stmt.body);
-                        Console.WriteLine();
-                        Console.WriteLine("-----------------------------");
-                    }
+                    //Execute(stmt.body);
+                    Console.WriteLine("-- Iteration: " + (i+1));
+                    Console.WriteLine("-- Index Value: " + i);
+                    Console.WriteLine();
+                    Console.WriteLine("-- Loop Body Output: ");
+                    i++;
+                    Execute(stmt.body);
+                    Console.WriteLine();
+                    Console.WriteLine("-----------------------------");
 
                 }
-                if (stmt.body.ToString() != "project2.Stmt+While") {
                     Console.WriteLine();
                     Console.WriteLine("Condition Value " + stmt.condition.ToString() + ": " + Evaluate(stmt.condition));
                     Console.WriteLine();
-                }
-                if (stmt.body.ToString() == "project2.Stmt+While") {
-                    Console.WriteLine("----------END FOR LOOP----------");
-                }
+                    Console.WriteLine("----------END LOOP----------");
                 
             } else {
                 while (IsTruthy(Evaluate(stmt.condition))) {

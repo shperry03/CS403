@@ -114,7 +114,6 @@ namespace project2
             }
             // Replace body with a while statement, passing in the condition and body
             body = new Stmt.While(condition, body, output);
-            body = new Stmt.While(condition, body, output);
 
             // If there is an initializer, it must run once before the entire loop.
             if (initializer != null) {

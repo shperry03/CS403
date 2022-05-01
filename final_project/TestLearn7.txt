@@ -1,0 +1,20 @@
+// returns the Fibonacci sequence recursively
+fun fib(n){
+    if(n <= 1){
+        return n;
+    }
+
+    return fib(n-1) + fib(n-2);
+}
+// start at 0
+var a  = 0;
+// limit is the number you stop at computing
+var limit = 3;
+print "Fibonacci Sequence through 4 values: ";
+
+//run through and comput the next fib sequence
+while(a <= limit){
+    //compute Fibonacci at a
+    print fib(a);
+    a = a + 1;
+}
